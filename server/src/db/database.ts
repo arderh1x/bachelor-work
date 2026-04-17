@@ -2,49 +2,80 @@ import { DatabaseSync } from 'node:sqlite';
 import path from 'node:path';
 import fs from 'node:fs';
 
-// 1. Визначаємо шлях (використовуємо 2 переходи вгору, щоб папка була в server/database)
 const dbFolder = path.resolve(import.meta.dirname, '../../database');
 const dbPath = path.join(dbFolder, 'reds7.sqlite');
 
-// 2. Гарантуємо існування папки (щоб не було SQLITE_CANTOPEN)
 if (!fs.existsSync(dbFolder)) {
     fs.mkdirSync(dbFolder, { recursive: true });
 }
-
-// 3. Створюємо екземпляр бази (це автоматично відкриває підключення)
 const db = new DatabaseSync(dbPath);
 
 export const initDB = () => {
     try {
-        // У node:sqlite не потрібен db.serialize(), запити йдуть один за одним синхронно
-        
-        // Таблиця користувачів
+        // 1. Основна таблиця аккаунтів
         db.exec(`
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 username TEXT UNIQUE NOT NULL,
                 email TEXT UNIQUE NOT NULL,
                 password TEXT NOT NULL,
-                role TEXT DEFAULT 'buyer',
+                is_producer_mode INTEGER DEFAULT 0,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )
         `);
 
-        // Таблиця товарів (меблі)
+        // 2. Профіль замовника (для форуму)
         db.exec(`
-            CREATE TABLE IF NOT EXISTS furniture (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                owner_id INTEGER,
-                title TEXT NOT NULL,
-                description TEXT,
-                price REAL NOT NULL,
-                FOREIGN KEY (owner_id) REFERENCES users(id)
+            CREATE TABLE IF NOT EXISTS customer_profiles (
+                user_id INTEGER PRIMARY KEY,
+                bio TEXT,
+                avatar_url TEXT,
+                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
             )
         `);
 
-        console.log('✅ База даних SQLite (node:sqlite) успішно ініціалізована.');
+        // 3. Профіль виробника (для магазину)
+        db.exec(`
+            CREATE TABLE IF NOT EXISTS producer_profiles (
+                user_id INTEGER PRIMARY KEY,
+                workshop_name TEXT,
+                bio TEXT,
+                specialty TEXT,
+                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+            )
+        `);
+
+        // 4. Таблиця товарів (посилається на профіль виробника)
+        db.exec(`
+            CREATE TABLE IF NOT EXISTS furniture (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                producer_id INTEGER,
+                name TEXT NOT NULL,
+                description TEXT,
+                price REAL NOT NULL,
+                category TEXT,
+                image_url TEXT,
+                FOREIGN KEY (producer_id) REFERENCES producer_profiles(user_id) ON DELETE CASCADE
+            )
+        `);
+
+        // 5. Таблиця запитів на форумі (посилається на профіль замовника)
+        db.exec(`
+            CREATE TABLE IF NOT EXISTS forum_requests (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                customer_id INTEGER,
+                title TEXT NOT NULL,
+                description TEXT NOT NULL,
+                budget REAL,
+                status TEXT DEFAULT 'open',
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (customer_id) REFERENCES customer_profiles(user_id) ON DELETE CASCADE
+            )
+        `);
+
+        console.log('Database successfully initialized.');
     } catch (err: any) {
-        console.error('❌ Помилка ініціалізації БД:', err.message);
+        console.error('Error initializing database:', err.message);
     }
 };
 

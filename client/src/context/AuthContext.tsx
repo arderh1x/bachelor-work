@@ -1,24 +1,30 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import api from '../api/axios';
 
+interface User {
+    id: number;
+    username: string;
+    is_producer_mode: boolean;
+}
+
 interface AuthContextType {
-    user: any;
-    login: (userData: any) => void;
+    user: User | null;
+    login: (userData: User) => void;
     logout: () => void;
+    toggleProducerMode: () => Promise<void>;
     loading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-    const [user, setUser] = useState<any>(null);
+    const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
 
-    // Перевіряємо, чи залогінений юзер при завантаженні сайту
     useEffect(() => {
         const checkAuth = async () => {
+            setLoading(true);
             try {
-                // Замість /me викликаємо /refresh при кожному завантаженні сторінки
                 const res = await api.get('/auth/refresh');
                 setUser(res.data.user);
             } catch (err) {
@@ -27,31 +33,49 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 setLoading(false);
             }
         };
-
         checkAuth();
 
-        // Додатково: оновлюємо токен кожні 15 хвилин, поки вкладка відкрита
         const interval = setInterval(async () => {
             try {
-                await api.get('/auth/refresh');
-                console.log("Токен оновлено автоматично");
+                const res = await api.get('/auth/refresh');
+                setUser(res.data.user);
+                console.log("Token was successfully auto-refreshed.");
             } catch (err) {
-                console.error("Не вдалося оновити токен");
+                console.error("Failed to refresh token.");
+                setUser(null);
             }
         }, 15 * 60 * 1000);
 
         return () => clearInterval(interval);
     }, []);
 
-    const login = (userData: any) => setUser(userData);
+
+    const login = (userData: User) => setUser(userData);
 
     const logout = async () => {
-        await api.post('/auth/logout');
-        setUser(null);
+        try {
+            await api.post('/auth/logout');
+        } finally {
+            setUser(null);
+        }
+    };
+
+    const toggleProducerMode = async () => {
+        try {
+            const res = await api.post('/auth/toggle-mode');
+            setUser(prev => prev ? {
+                ...prev,
+                is_producer_mode: res.data.is_producer_mode
+            } : null);
+
+        } catch (err) {
+            console.error("Error toggling mode:", err);
+            throw err;
+        }
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, loading }}>
+        <AuthContext.Provider value={{ user, login, logout, toggleProducerMode, loading }}>
             {children}
         </AuthContext.Provider>
     );
