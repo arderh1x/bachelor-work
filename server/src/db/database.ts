@@ -1,18 +1,16 @@
 import { DatabaseSync } from 'node:sqlite';
 import path from 'node:path';
 import fs from 'node:fs';
+import { envConfig } from '../config.js';
 
 const dbFolder = path.resolve(import.meta.dirname, '../../database');
-const dbPath = path.join(dbFolder, 'reds7.sqlite');
+const dbPath = path.join(dbFolder, envConfig.dbPath);
 
-if (!fs.existsSync(dbFolder)) {
-    fs.mkdirSync(dbFolder, { recursive: true });
-}
+if (!fs.existsSync(dbFolder)) fs.mkdirSync(dbFolder, { recursive: true });
+
 const db = new DatabaseSync(dbPath);
-
 export const initDB = () => {
     try {
-        // 1. Основна таблиця аккаунтів
         db.exec(`
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -24,7 +22,6 @@ export const initDB = () => {
             )
         `);
 
-        // 2. Профіль замовника (для форуму)
         db.exec(`
             CREATE TABLE IF NOT EXISTS customer_profiles (
                 user_id INTEGER PRIMARY KEY,
@@ -34,22 +31,21 @@ export const initDB = () => {
             )
         `);
 
-        // 3. Профіль виробника (для магазину)
         db.exec(`
             CREATE TABLE IF NOT EXISTS producer_profiles (
                 user_id INTEGER PRIMARY KEY,
                 workshop_name TEXT,
                 bio TEXT,
-                specialty TEXT,
+                avatar_url TEXT,
                 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
             )
         `);
 
-        // 4. Таблиця товарів (посилається на профіль виробника)
         db.exec(`
             CREATE TABLE IF NOT EXISTS furniture (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                producer_id INTEGER,
+                producer_id INTEGER NOT NULL,
+                is_custom INTEGER DEFAULT 0,
                 name TEXT NOT NULL,
                 description TEXT,
                 price REAL NOT NULL,
@@ -59,17 +55,18 @@ export const initDB = () => {
             )
         `);
 
-        // 5. Таблиця запитів на форумі (посилається на профіль замовника)
         db.exec(`
-            CREATE TABLE IF NOT EXISTS forum_requests (
+            CREATE TABLE IF NOT EXISTS orders (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                customer_id INTEGER,
-                title TEXT NOT NULL,
-                description TEXT NOT NULL,
+                customer_id INTEGER NOT NULL,
+                producer_id INTEGER NOT NULL,
+                furniture_id INTEGER NOT NULL,
                 budget REAL,
-                status TEXT DEFAULT 'open',
+                status TEXT DEFAULT 'pending', -- pending, accepted, rejected, completed
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (customer_id) REFERENCES customer_profiles(user_id) ON DELETE CASCADE
+                FOREIGN KEY (customer_id) REFERENCES users(id) ON DELETE CASCADE,
+                FOREIGN KEY (producer_id) REFERENCES producer_profiles(user_id) ON DELETE CASCADE,
+                FOREIGN KEY (furniture_id) REFERENCES furniture(id) ON DELETE SET NULL
             )
         `);
 

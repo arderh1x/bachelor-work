@@ -1,8 +1,10 @@
 import { Routes, Route } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
+import Register from './pages/user/Register';
+import Login from './pages/user/Login';
+import CApp from './pages/customer/CApp';
+import PApp from './pages/producer/PApp';
 import Navbar from './components/Navbar';
-import Register from './pages/Register';
-import Login from './pages/Login';
 
 function App() {
   const { user, loading } = useAuth();
@@ -15,22 +17,10 @@ function App() {
 
       <main style={{ padding: '20px' }}>
         <Routes>
-          <Route path="/" element={
-            user?.is_producer_mode ? (
-              <section>
-                <h1>Панель виробника</h1>
-                <p>Тут ви можете керувати своїми товарами та переглядати замовлення з форуму.</p>
-              </section>
-            ) : (
-              <section>
-                <h1>Вітрина меблів</h1>
-                <p>Знайдіть готові меблі або залиште запит на форумі.</p>
-              </section>
-            )
-          } />
-
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+
+          <Route path="/*" element={user?.is_producer_mode ? <PApp /> : <CApp />} />
         </Routes>
       </main>
     </div>

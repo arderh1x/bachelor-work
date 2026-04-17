@@ -2,18 +2,16 @@ import type { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import db from '../db/database.js';
+import { envConfig } from '../config.js';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_for_dev_only';
+const JWT_SECRET = envConfig.jwtSecret;
 
 
 export const toggleMode = async (req: any, res: Response) => {
     try {
         const userId = req.user.id;
         const user: any = db.prepare('SELECT is_producer_mode, username FROM users WHERE id = ?').get(userId);
-
-        if (!user) {
-            return res.status(404).json({ error: "User not found" });
-        }
+        if (!user) return res.status(404).json({ error: "User not found" });
 
         const newStatus = user.is_producer_mode ? 0 : 1;
         if (newStatus === 1) {
@@ -36,13 +34,9 @@ export const toggleMode = async (req: any, res: Response) => {
 export const register = async (req: Request, res: Response) => {
     try {
         const { username, email, password } = req.body;
-
-        if (!username || !email || !password) {
-            return res.status(400).json({ error: "Some fields are empty." });
-        }
+        if (!username || !email || !password) return res.status(400).json({ error: "Some fields are empty." });
 
         const hashedPassword = await bcrypt.hash(password, 10);
-
         try {
             db.exec("BEGIN TRANSACTION");
 
@@ -65,6 +59,7 @@ export const register = async (req: Request, res: Response) => {
             db.exec("ROLLBACK");
             throw err;
         }
+
     } catch (error: any) {
         if (error.message.includes('UNIQUE constraint failed')) {
             return res.status(400).json({ error: "User with that email or username already exists." });
@@ -77,19 +72,13 @@ export const register = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
     try {
         const { username, password } = req.body;
-        if (!username || !password) {
-            return res.status(400).json({ error: "Enter your username and password." });
-        }
+        if (!username || !password) return res.status(400).json({ error: "Enter your username and password." });
 
         const user: any = db.prepare('SELECT * FROM users WHERE username = ?').get(username);
-        if (!user) {
-            return res.status(400).json({ error: "User not found." });
-        }
+        if (!user) return res.status(400).json({ error: "User not found." });
 
         const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(400).json({ error: "Incorrect password." });
-        }
+        if (!isMatch) return res.status(400).json({ error: "Incorrect password." });
 
         const token = jwt.sign(
             { id: user.id, is_producer_mode: !!user.is_producer_mode },
@@ -126,10 +115,7 @@ export const logout = (req: Request, res: Response) => {
 
 export const refresh = async (req: Request, res: Response) => {
     const token = req.cookies.token;
-
-    if (!token) {
-        return res.status(401).json({ error: "Token is missing." });
-    }
+    if (!token) return res.status(401).json({ error: "Token is missing." });
 
     try {
         const decoded: any = jwt.verify(token, JWT_SECRET);
