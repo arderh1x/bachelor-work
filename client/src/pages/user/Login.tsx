@@ -3,21 +3,27 @@ import api from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import styles from './Auth.module.css';
+import type { StatusMessage } from '@shared/types';
+import { StatusDisplay } from '@/components/StatusDisplay';
 
 const Login = () => {
     const [formData, setFormData] = useState({ username: '', password: '' });
-    const [message, setMessage] = useState('');
+    const [message, setMessage] = useState<StatusMessage>({ text: '', type: null });
     const navigate = useNavigate();
     const { login } = useAuth();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setMessage({ text: '', type: null });
         try {
             const response = await api.post('/auth/login', formData);
             login(response.data.user);
             navigate('/');
         } catch (error: any) {
-            setMessage(error.response?.data?.error || 'Authorization error.');
+            setMessage({
+                text: error.response?.data?.error || 'Authorization error.',
+                type: 'error'
+            });
         }
     };
 
@@ -39,7 +45,7 @@ const Login = () => {
                 />
                 <button type="submit" className={styles.submitBtn}>Увійти</button>
             </form>
-            {message && <p className={styles.message}>{message}</p>}
+            <StatusDisplay message={message} />
         </div>
     );
 };

@@ -1,11 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import api from '../api/axios';
-
-interface User {
-    id: number;
-    username: string;
-    is_producer_mode: boolean;
-}
+import type { User } from '@shared/types'
 
 interface AuthContextType {
     user: User | null;

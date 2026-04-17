@@ -2,20 +2,29 @@ import React, { useState } from 'react';
 import api from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
 import styles from './Auth.module.css';
+import type { StatusMessage } from '@shared/types';
+import { StatusDisplay } from '@/components/StatusDisplay';
 
 const Register = () => {
     const [formData, setFormData] = useState({ username: '', email: '', password: '' });
-    const [message, setMessage] = useState('');
+    const [message, setMessage] = useState<StatusMessage>({ text: '', type: null });
     const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setMessage({ text: '', type: null });
         try {
             await api.post('/auth/register', formData);
-            setMessage('Registration is successful! Now log in...');
+            setMessage({
+                text: 'Registration is successful! Now you can log in...',
+                type: "success"
+            });
             setTimeout(() => navigate('/login'), 1000);
         } catch (error: any) {
-            setMessage(error.response?.data?.error || 'Registration error.');
+            setMessage({
+                text: error.response?.data?.error || 'Registration error.',
+                type: 'error'
+            });
         }
     };
 
@@ -43,7 +52,7 @@ const Register = () => {
                 />
                 <button type="submit" className={styles.submitBtn}>Register</button>
             </form>
-            {message && <p className={styles.message}>{message}</p>}
+            <StatusDisplay message={message} />
         </div>
     );
 };

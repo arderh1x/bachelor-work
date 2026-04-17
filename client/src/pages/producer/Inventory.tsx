@@ -1,11 +1,5 @@
+import type { Furniture } from '@shared/types';
 import { useState, useEffect } from 'react';
-
-interface Furniture {
-    id: number;
-    name: string;
-    price: number;
-    category: string;
-}
 
 const Inventory = () => {
     const [items, setItems] = useState<Furniture[]>([]);

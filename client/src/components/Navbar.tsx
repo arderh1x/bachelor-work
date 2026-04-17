@@ -39,7 +39,7 @@ const Navbar = () => {
                                 className={`${styles.modeBtn} ${user.is_producer_mode ? styles.producerActive : styles.customerActive
                                     }`}
                             >
-                                {user.is_producer_mode ? 'Producer Mode' : 'Buyer Mode'} (click to switch)
+                                {user.is_producer_mode ? 'Producer Mode' : 'Customer Mode'} (click to switch)
                             </button>
                             <button onClick={handleLogout} className={styles.logoutBtn}>Logout</button>
                         </>

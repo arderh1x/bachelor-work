@@ -1,12 +1,6 @@
+import type { Producer } from '@shared/types';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-
-interface Producer {
-    user_id: number;
-    workshop_name: string;
-    bio: string;
-    avatar_url: string;
-}
 
 const CHome = () => {
     const [producers, setProducers] = useState<Producer[]>([]);
