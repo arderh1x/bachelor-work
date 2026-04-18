@@ -6,6 +6,7 @@ import { initDB } from './db/database.js';
 import { envConfig } from './config.js';
 import authRoutes from './routes/authRoutes.js';
 import profileRoutes from './routes/profileRoutes.js';
+import furnitureRoutes from './routes/furnitureRoutes.js';
 
 const app: Application = express();
 const PORT = envConfig.port;
@@ -17,6 +18,7 @@ app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/profiles', profileRoutes);
+app.use('/api/furniture', furnitureRoutes);
 
 app.get('/api', (req: Request, res: Response) => {
     res.send('RedS7 Server is running');

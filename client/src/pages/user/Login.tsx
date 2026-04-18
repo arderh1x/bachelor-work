@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import api from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { authApi } from '../../api/auth';
 import styles from './Auth.module.css';
-import type { StatusMessage } from '@shared/types';
+import type { StatusMessage, LoginDTO } from '@shared/types';
 import { StatusDisplay } from '@/components/StatusDisplay';
 
 const Login = () => {
-    const [formData, setFormData] = useState({ username: '', password: '' });
+    const [formData, setFormData] = useState<LoginDTO>({ username: '', password: '' });
     const [message, setMessage] = useState<StatusMessage>({ text: '', type: null });
     const navigate = useNavigate();
     const { login } = useAuth();
@@ -16,7 +16,7 @@ const Login = () => {
         e.preventDefault();
         setMessage({ text: '', type: null });
         try {
-            const response = await api.post('/auth/login', formData);
+            const response = await authApi.login(formData);
             login(response.data.user);
             navigate('/');
         } catch (error: any) {
@@ -34,16 +34,18 @@ const Login = () => {
                 <input
                     type="text"
                     placeholder="Username"
+                    value={formData.username}
                     onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                     required
                 />
                 <input
                     type="password"
                     placeholder="Password"
+                    value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                     required
                 />
-                <button type="submit" className={styles.submitBtn}>Увійти</button>
+                <button type="submit" className={styles.submitBtn}>Login</button>
             </form>
             <StatusDisplay message={message} />
         </div>

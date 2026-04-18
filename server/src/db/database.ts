@@ -51,6 +51,7 @@ export const initDB = () => {
                 price REAL NOT NULL,
                 category TEXT,
                 image_url TEXT,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (producer_id) REFERENCES producer_profiles(user_id) ON DELETE CASCADE
             )
         `);

@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import api from '../api/axios';
+import { authApi } from '../api/auth';
 import type { User } from '@shared/types'
 
 interface AuthContextType {
@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const checkAuth = async () => {
             setLoading(true);
             try {
-                const res = await api.get('/auth/refresh');
+                const res = await authApi.refresh();
                 setUser(res.data.user);
             } catch (err) {
                 setUser(null);
@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
         const interval = setInterval(async () => {
             try {
-                const res = await api.get('/auth/refresh');
+                const res = await authApi.refresh();
                 setUser(res.data.user);
                 console.log("Token was successfully auto-refreshed.");
             } catch (err) {
@@ -49,7 +49,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const logout = async () => {
         try {
-            await api.post('/auth/logout');
+            await authApi.logout();
         } finally {
             setUser(null);
         }
@@ -57,7 +57,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const toggleProducerMode = async () => {
         try {
-            const res = await api.post('/auth/toggle-mode');
+            const res = await authApi.toggleMode();
             setUser(prev => prev ? {
                 ...prev,
                 is_producer_mode: res.data.is_producer_mode

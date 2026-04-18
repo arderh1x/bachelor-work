@@ -1,0 +1,32 @@
+import { useState } from 'react';
+import { furnitureApi } from '@/api/furniture';
+import { FURN_CATEGORIES } from '@shared/types';
+import type { CreateFurnitureDTO } from '@shared/types';
+import { FurnBaseForm } from './FurnBaseForm';
+
+interface AddProps {
+    onSuccess: () => void;
+}
+
+export const FurnAddForm = ({ onSuccess }: AddProps) => {
+    const [loading, setLoading] = useState(false);
+
+    const handleAdd = async (data: CreateFurnitureDTO) => {
+        setLoading(true);
+        try {
+            await furnitureApi.create(data);
+            onSuccess();
+            alert('Створено!');
+        } catch (err) { alert('Помилка'); }
+        finally { setLoading(false); }
+    };
+
+    return (
+        <FurnBaseForm
+            initialData={{ name: '', price: 0, category: FURN_CATEGORIES.OTHER, description: '', image_url: '' }}
+            onSubmit={handleAdd}
+            submitText="Додати товар"
+            isSubmitting={loading}
+        />
+    );
+};
