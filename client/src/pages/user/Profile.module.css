@@ -1,0 +1,186 @@
+.container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.container h1 {
+    color: #333;
+    margin-bottom: 30px;
+    font-size: 2rem;
+    text-align: center;
+}
+
+.profileCard {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+/* Секція Аватара */
+.avatarSection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 25px;
+}
+
+.avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #e0e0e0;
+}
+
+.avatarSection input {
+    width: 100%;
+    max-width: 300px;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+/* Інформаційна секція */
+.infoSection {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.field label {
+    font-weight: 600;
+    color: #666;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.field p {
+    font-size: 1.1rem;
+    color: #222;
+    margin: 0;
+    padding: 8px 0;
+}
+
+.field input, 
+.field textarea {
+    padding: 12px;
+    border: 1.5px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+.field input:focus, 
+.field textarea:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+.field textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+/* Кнопки */
+.actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+.editBtn, .saveBtn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.editBtn:hover, .saveBtn:hover {
+    background-color: #0056b3;
+}
+
+.cancelBtn {
+    background-color: #f8f9fa;
+    color: #333;
+    border: 1px solid #ddd;
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.cancelBtn:hover {
+    background-color: #e2e6ea;
+}
+
+/* Адаптивність */
+@media (max-width: 600px) {
+    .profileCard {
+        padding: 20px;
+    }
+    
+    .actions {
+        flex-direction: column;
+    }
+    
+    .actions button {
+        width: 100%;
+    }
+}
+
+
+.headerInfo {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.profileTitle {
+    margin: 0;
+    font-size: 1.8rem;
+    color: #333;
+}
+
+.badge {
+    display: inline-block;
+    background: #e3f2fd;
+    color: #1976d2;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-top: 5px;
+}
+
+.label {
+    display: block;
+    font-weight: bold;
+    color: #666;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.text {
+    line-height: 1.6;
+    color: #444;
+    white-space: pre-wrap;
+}

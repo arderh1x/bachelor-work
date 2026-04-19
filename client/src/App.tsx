@@ -5,6 +5,7 @@ import CApp from './pages/customer/CApp';
 import PApp from './pages/producer/PApp';
 import Navbar from './components/Navbar';
 import { useAuth } from './hooks/useAuth';
+import ProfilePage from './pages/user/ProfilePage';
 
 function App() {
   const { user, loading } = useAuth();
@@ -19,6 +20,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/profile" element={<ProfilePage />} />
 
           <Route path="/*" element={user?.is_producer_mode ? <PApp /> : <CApp />} />
         </Routes>

@@ -6,11 +6,16 @@ import { envConfig } from '../config.js';
 
 const JWT_SECRET = envConfig.jwtSecret;
 
+const cookieConfig = {
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000,
+    secure: false // true for production with HTTPS
+};
 
-export const toggleMode = async (req: any, res: Response) => {
+export const toggleMode = async (req: Request, res: Response) => {
     try {
         const userId = req.user.id;
-        const user: any = db.prepare('SELECT is_producer_mode, username FROM users WHERE id = ?').get(userId);
+        const user: any = db.prepare('SELECT id, is_producer_mode, username FROM users WHERE id = ?').get(userId);
         if (!user) return res.status(404).json({ error: "User not found" });
 
         const newStatus = user.is_producer_mode ? 0 : 1;
@@ -22,10 +27,30 @@ export const toggleMode = async (req: any, res: Response) => {
         }
 
         db.prepare('UPDATE users SET is_producer_mode = ? WHERE id = ?').run(newStatus, userId);
-        res.json({ is_producer_mode: !!newStatus });
 
-    } catch (error: any) {
-        console.error("ToggleMode Error:", error.message);
+        const token = jwt.sign(
+            {
+                id: user.id,
+                username: user.username,
+                is_producer_mode: !!newStatus
+            },
+            JWT_SECRET,
+            { expiresIn: '1d' }
+        );
+
+        res.cookie('token', token, cookieConfig);
+
+        res.json({
+            is_producer_mode: !!newStatus,
+            user: {
+                id: user.id,
+                username: user.username,
+                is_producer_mode: !!newStatus
+            }
+        });
+
+    } catch (error: unknown) {
+        console.error("ToggleMode Error:", error);
         res.status(500).json({ error: 'Failed to toggle mode.' });
     }
 };
@@ -86,11 +111,7 @@ export const login = async (req: Request, res: Response) => {
             { expiresIn: '1d' }
         );
 
-        res.cookie('token', token, {
-            httpOnly: true,
-            maxAge: 24 * 60 * 60 * 1000,
-            secure: false // true for production with HTTPS
-        });
+        res.cookie('token', token, cookieConfig);
 
         res.json({
             message: "Login is successful.",
@@ -128,10 +149,7 @@ export const refresh = async (req: Request, res: Response) => {
             { expiresIn: '1d' }
         );
 
-        res.cookie('token', newToken, {
-            httpOnly: true,
-            maxAge: 24 * 60 * 60 * 1000
-        });
+        res.cookie('token', newToken, cookieConfig);
 
         res.json({
             user: {

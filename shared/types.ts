@@ -13,6 +13,12 @@ export interface Producer {
     avatar_url: string;
 }
 
+export interface Customer {
+    user_id: number;
+    bio: string;
+    avatar_url: string;
+}
+
 export interface Furniture {
     id: number;
     producer_id: number;
@@ -27,19 +33,20 @@ export interface Furniture {
 export type CreateFurnitureDTO = Omit<Furniture, 'id' | 'created_at' | 'producer_id'>;
 export type LoginDTO = Pick<User, 'username' | 'password'>;
 export type RegisterDTO = Pick<User, 'username' | 'email' | 'password'>;
+export type UpdateProfileDTO = Partial<Pick<Producer, 'workshop_name' | 'bio' | 'avatar_url'>>;
 
 export interface StatusMessage {
     text: string;
     type: 'success' | 'error' | 'info' | null;
 }
 
-export const FURN_CATEGORIES = {
-    TABLE: 'Стіл',
-    CHAIR: 'Стілець',
-    WARDROBE: 'Шафа',
-    BED: 'Ліжко',
-    SOFA: 'Диван',
-    OTHER: 'Інше'
-} as const;
+export enum FurnitureCategories {
+    TABLE = 'Table',
+    CHAIR = 'Chair',
+    WARDROBE = 'Wardrobe',
+    BED = 'Bed',
+    SOFA = 'Sofa',
+    OTHER = 'Other'
+}
 
-export type FurnitureCategory = typeof FURN_CATEGORIES[keyof typeof FURN_CATEGORIES];
+export type ProfileResponse = Producer | Customer;

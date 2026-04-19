@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { furnitureApi } from '@/api/furniture';
-import { FURN_CATEGORIES } from '@shared/types';
+import { FurnitureCategories } from '@shared/types';
 import type { CreateFurnitureDTO } from '@shared/types';
 import { FurnBaseForm } from './FurnBaseForm';
 
@@ -26,7 +26,7 @@ export const FurnAddForm = ({ onSuccess }: AddProps) => {
 
     return (
         <FurnBaseForm
-            initialData={{ name: '', price: 0, category: FURN_CATEGORIES.OTHER, description: '', image_url: '' }}
+            initialData={{ name: '', price: 0, category: FurnitureCategories.OTHER, description: '', image_url: '' }}
             onSubmit={handleAdd}
             submitText="Додати товар"
             isSubmitting={loading}
