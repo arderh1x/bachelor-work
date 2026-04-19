@@ -12,13 +12,14 @@ interface EditProps {
 export const FurnEditForm = ({ item, onSuccess, onCancel }: EditProps) => {
     const [loading, setLoading] = useState(false);
 
-    const handleUpdate = async (data: any) => {
+    const handleUpdate = async (data: Partial<Furniture>) => {
         setLoading(true);
         try {
             await furnitureApi.update(item.id, data);
             onSuccess();
             alert('Зміни збережено!');
-        } catch (error) {
+        } catch (error: unknown) {
+            console.error(error);
             alert('Помилка при оновленні');
         } finally {
             setLoading(false);

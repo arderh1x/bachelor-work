@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 import styles from './Navbar.module.css';
+import { useAuth } from '@/hooks/useAuth';
 
 const Navbar = () => {
     const { user, logout, toggleProducerMode, loading } = useAuth();

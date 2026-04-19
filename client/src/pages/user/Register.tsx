@@ -4,6 +4,7 @@ import { authApi } from '../../api/auth';
 import styles from './Auth.module.css';
 import type { StatusMessage, RegisterDTO } from '@shared/types';
 import { StatusDisplay } from '@/components/StatusDisplay';
+import { isAxiosError } from 'axios';
 
 const Register = () => {
     const [formData, setFormData] = useState<RegisterDTO>({ username: '', email: '', password: '' });
@@ -20,9 +21,14 @@ const Register = () => {
                 type: "success"
             });
             setTimeout(() => navigate('/login'), 1000);
-        } catch (error: any) {
+
+        } catch (error: unknown) {
+            let errorMessage = 'Registration error.';
+            if (isAxiosError(error)) errorMessage = error.response?.data?.error || error.message || errorMessage;
+            else if (error instanceof Error) errorMessage = error.message;
+
             setMessage({
-                text: error.response?.data?.error || 'Registration error.',
+                text: errorMessage,
                 type: 'error'
             });
         }

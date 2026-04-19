@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
 import { authApi } from '../../api/auth';
 import styles from './Auth.module.css';
 import type { StatusMessage, LoginDTO } from '@shared/types';
 import { StatusDisplay } from '@/components/StatusDisplay';
+import { isAxiosError } from 'axios';
+import { useAuth } from '@/hooks/useAuth';
 
 const Login = () => {
     const [formData, setFormData] = useState<LoginDTO>({ username: '', password: '' });
@@ -19,9 +20,14 @@ const Login = () => {
             const response = await authApi.login(formData);
             login(response.data.user);
             navigate('/');
-        } catch (error: any) {
+
+        } catch (error: unknown) {
+            let errorMessage = 'Authorization error.';
+            if (isAxiosError(error)) errorMessage = error.response?.data?.error || error.message || errorMessage;
+            else if (error instanceof Error) errorMessage = error.message;
+
             setMessage({
-                text: error.response?.data?.error || 'Authorization error.',
+                text: errorMessage,
                 type: 'error'
             });
         }

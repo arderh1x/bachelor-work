@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 import { authApi } from '../api/auth';
 import type { User } from '@shared/types'
 
@@ -22,7 +22,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             try {
                 const res = await authApi.refresh();
                 setUser(res.data.user);
-            } catch (err) {
+            } catch (error) {
+                console.error(error)
                 setUser(null);
             } finally {
                 setLoading(false);
@@ -35,8 +36,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 const res = await authApi.refresh();
                 setUser(res.data.user);
                 console.log("Token was successfully auto-refreshed.");
-            } catch (err) {
-                console.error("Failed to refresh token.");
+            } catch (error) {
+                console.error("Failed to refresh token:", error);
                 setUser(null);
             }
         }, 15 * 60 * 1000);
@@ -76,8 +77,4 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     );
 };
 
-export const useAuth = () => {
-    const context = useContext(AuthContext);
-    if (!context) throw new Error("useAuth must be used within AuthProvider");
-    return context;
-};
+export { AuthContext };

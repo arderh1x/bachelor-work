@@ -17,7 +17,10 @@ export const FurnAddForm = ({ onSuccess }: AddProps) => {
             await furnitureApi.create(data);
             onSuccess();
             alert('Створено!');
-        } catch (err) { alert('Помилка'); }
+        } catch (error) {
+            console.error(error)
+            alert('Помилка');
+        }
         finally { setLoading(false); }
     };
 

@@ -28,6 +28,7 @@ export const FurnInventory = () => {
             await furnitureApi.delete(id);
             fetchFurniture();
         } catch (error) {
+            console.error(error);
             alert('Не вдалося видалити товар');
         }
     };

@@ -1,10 +1,10 @@
 import { Routes, Route } from 'react-router-dom';
-import { useAuth } from './context/AuthContext';
 import Register from './pages/user/Register';
 import Login from './pages/user/Login';
 import CApp from './pages/customer/CApp';
 import PApp from './pages/producer/PApp';
 import Navbar from './components/Navbar';
+import { useAuth } from './hooks/useAuth';
 
 function App() {
   const { user, loading } = useAuth();
