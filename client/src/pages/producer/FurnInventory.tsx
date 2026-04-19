@@ -1,9 +1,9 @@
 import { useEffect, useState, useCallback } from 'react';
 import { furnitureApi } from '@/api/furniture';
 import type { Furniture } from '@shared/types';
-import { FurnAddForm } from './FurnAddForm';
-import { FurnList } from './FurnList';
 import styles from './Furniture.module.css';
+import { FurnAddForm } from '@/components/Furniture/FurnAddForm';
+import { FurnList } from '@/components/Furniture/FurnList';
 
 export const FurnInventory = () => {
     const [furniture, setFurniture] = useState<Furniture[]>([]);

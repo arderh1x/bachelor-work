@@ -4,6 +4,8 @@ import { verifyToken } from '@/middlewares/authMiddlewares.js';
 
 const router = Router();
 
+router.get('/producer/:producerId', getFurnitureList);
+
 router.use(verifyToken);
 
 router.post('/', createFurniture);

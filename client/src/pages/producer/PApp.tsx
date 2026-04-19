@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import PHome from './PHome';
-import { FurnInventory } from './Furniture/FurnInventory';
+import { FurnInventory } from './FurnInventory';
 
 const PApp = () => {
     return (

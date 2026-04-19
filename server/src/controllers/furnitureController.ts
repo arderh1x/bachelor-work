@@ -26,10 +26,15 @@ export const createFurniture: RequestHandler<{}, any, CreateFurnitureDTO> = (req
 
 
 export const getFurnitureList: RequestHandler = (req, res) => {
-    const producer_id = req.user.id;
+    const targetProducerId = req.params.producerId
+        ? Number(req.params.producerId)
+        : req.user?.id;
+
+    if (!targetProducerId) return res.status(400).json({ error: 'Producer ID is required.' });
 
     try {
-        const items = db.prepare('SELECT * FROM furniture WHERE producer_id = ? ORDER BY created_at DESC').all(producer_id);
+        const items = db.prepare(`SELECT * FROM furniture WHERE producer_id = ? ORDER BY created_at DESC`)
+            .all(targetProducerId);
         res.json(items);
     } catch (error) {
         console.error(error);
