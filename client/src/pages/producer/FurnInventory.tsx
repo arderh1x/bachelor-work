@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { furnitureApi } from '@/api/furniture';
 import type { Furniture } from '@shared/types';
-import styles from './Furniture.module.css';
+import styles from '@/components/Furniture/Furniture.module.css';
 import { FurnAddForm } from '@/components/Furniture/FurnAddForm';
 import { FurnList } from '@/components/Furniture/FurnList';
 
@@ -47,6 +47,7 @@ export const FurnInventory = () => {
                 <FurnList
                     items={furniture}
                     loading={loading}
+                    mode="producer"
                     onDelete={handleDelete}
                     onRefresh={fetchFurniture}
                 />

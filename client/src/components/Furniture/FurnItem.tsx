@@ -5,23 +5,22 @@ import styles from './Furniture.module.css';
 
 interface FurnItemProps {
     item: Furniture;
-    onDelete: (id: number) => void;
-    onUpdate: () => void;
+    mode: 'producer' | 'customer';
+    onDelete?: (id: number) => void;
+    onUpdate?: () => void;
+    onOrder?: (item: Furniture) => void;
 }
 
-export const FurnItem = ({ item, onDelete, onUpdate }: FurnItemProps) => {
+export const FurnItem = ({ item, mode, onDelete, onUpdate, onOrder }: FurnItemProps) => {
     const [isEditing, setIsEditing] = useState(false);
 
-    if (isEditing) {
+    if (mode === 'producer' && isEditing) {
         return (
             <div className={styles.itemCard}>
                 <FurnEditForm
                     item={item}
                     onCancel={() => setIsEditing(false)}
-                    onSuccess={() => {
-                        setIsEditing(false);
-                        onUpdate();
-                    }}
+                    onSuccess={() => { setIsEditing(false); onUpdate?.(); }}
                 />
             </div>
         );
@@ -39,12 +38,20 @@ export const FurnItem = ({ item, onDelete, onUpdate }: FurnItemProps) => {
             </div>
 
             <div className={styles.actions}>
-                <button onClick={() => setIsEditing(true)} className={styles.editBtn}>
-                    Редагувати
-                </button>
-                <button onClick={() => onDelete(item.id)} className={styles.delBtn}>
-                    Видалити
-                </button>
+                {mode === 'producer' ? (
+                    <>
+                        <button onClick={() => setIsEditing(true)} className={styles.editBtn}>
+                            Редагувати
+                        </button>
+                        <button onClick={() => onDelete?.(item.id)} className={styles.delBtn}>
+                            Видалити
+                        </button>
+                    </>
+                ) : (
+                    <button onClick={() => onOrder?.(item)} className={styles.orderBtn}>
+                        Замовити
+                    </button>
+                )}
             </div>
         </div>
     );

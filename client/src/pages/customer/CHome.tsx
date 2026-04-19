@@ -1,38 +1,51 @@
 import type { Producer } from '@shared/types';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import styles from '@/components/Furniture/Furniture.module.css';
 
 const CHome = () => {
     const [producers, setProducers] = useState<Producer[]>([]);
     const [error, setError] = useState('');
 
     useEffect(() => {
-        fetch('api/profiles/producers')
+        fetch('/api/profiles/producers')
             .then(res => res.json())
             .then(data => setProducers(data))
-            .catch(err => setError(`Не вдалося завантажити список майстрів: ${err}`));
+            .catch(err => setError(`Не вдалося завантажити майстрів: ${err}`));
     }, []);
 
     return (
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        <div className={styles.inventoryContainer}>
             <header style={{ marginBottom: '30px' }}>
                 <h1>Наші майстри</h1>
-                <p>Знайдіть професіонала для вашого проєкту</p>
+                <p>Оберіть професіонала для вашого проєкту</p>
             </header>
 
-            {error && <p style={{ color: 'red' }}>{error}</p>}
+            {error && <div className={styles.errorMsg}>{error}</div>}
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px' }}>
+            <div className={styles.producersGrid}>
                 {producers.map(p => (
-                    <div key={p.user_id} style={{ border: '1px solid #ddd', padding: '15px', borderRadius: '8px' }}>
-                        <div style={{ width: '100%', height: '150px', backgroundColor: '#f0f0f0', borderRadius: '4px', marginBottom: '10px' }}>
-                            {p.avatar_url && <img src={p.avatar_url} alt={p.workshop_name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+                    <div key={p.user_id} className={`${styles.itemCard} ${styles.producerCard}`}>
+                        <div className={styles.producerImageWrapper}>
+                            {p.avatar_url ? (
+                                <img src={p.avatar_url} alt={p.workshop_name} className={styles.producerImage} />
+                            ) : (
+                                <span className={styles.noImagePlaceholder}>Фото відсутнє</span>
+                            )}
                         </div>
-                        <h3>{p.workshop_name || 'Без назви'}</h3>
-                        <p style={{ fontSize: '0.9em', color: '#666' }}>{p.bio?.substring(0, 100)}...</p>
-                        <Link to={`/producer/${p.user_id}`} style={{ color: '#007bff', textDecoration: 'none', fontWeight: 'bold' }}>
-                            Переглянути майстерню →
-                        </Link>
+                        <div className={styles.producerContent}>
+                            <h3 className={styles.producerTitle}>{p.workshop_name || 'Майстер'}</h3>
+                            <p className={styles.description}>
+                                {p.bio ? `${p.bio.substring(0, 100)}...` : 'Опис відсутній.'}
+                            </p>
+                            <Link
+                                to={`/producer/${p.user_id}`}
+                                className={styles.orderBtn}
+                                style={{ textDecoration: 'none', textAlign: 'center', marginTop: 'auto' }}
+                            >
+                                Переглянути майстерню →
+                            </Link>
+                        </div>
                     </div>
                 ))}
             </div>
