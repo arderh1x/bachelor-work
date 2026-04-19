@@ -5,7 +5,7 @@ import cors from 'cors';
 import { initDB } from './db/database.js';
 import { envConfig } from './config.js';
 import authRoutes from './routes/authRoutes.js';
-import profileRoutes from './routes/profileRoutes.js';
+import profilesRoutes from './routes/profilesRoutes.js';
 import furnitureRoutes from './routes/furnitureRoutes.js';
 
 const app: Application = express();
@@ -17,7 +17,7 @@ app.use(cookieParser());
 app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 
 app.use('/api/auth', authRoutes);
-app.use('/api/profiles', profileRoutes);
+app.use('/api/profiles', profilesRoutes);
 app.use('/api/furniture', furnitureRoutes);
 
 app.get('/api', (req: Request, res: Response) => {

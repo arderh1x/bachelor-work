@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllProducers, getMyProfile, getProducerById, updateProfile } from '../controllers/profileController.js';
+import { getAllProducers, getMyProfile, getProducerById, updateProfile } from '../controllers/profilesController.js';
 import { verifyToken } from '@/middlewares/authMiddlewares.js';
 
 const router = Router();
