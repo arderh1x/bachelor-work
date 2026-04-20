@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { FurnBaseForm } from './FurnBaseForm';
 import { furnitureApi } from '@/api/furniture';
 import type { Furniture } from '@shared/types';
+import styles from './Furniture.module.css'; // Імпортуємо стилі
 
 interface EditProps {
     item: Furniture;
@@ -17,7 +18,6 @@ export const FurnEditForm = ({ item, onSuccess, onCancel }: EditProps) => {
         try {
             await furnitureApi.update(item.id, data);
             onSuccess();
-            alert('Зміни збережено!');
         } catch (error: unknown) {
             console.error(error);
             alert('Помилка при оновленні');
@@ -27,12 +27,14 @@ export const FurnEditForm = ({ item, onSuccess, onCancel }: EditProps) => {
     };
 
     return (
-        <FurnBaseForm
-            initialData={item}
-            onSubmit={handleUpdate}
-            onCancel={onCancel}
-            submitText="Зберегти"
-            isSubmitting={loading}
-        />
+        <div className={styles.editFormContainer}>
+            <FurnBaseForm
+                initialData={item}
+                onSubmit={handleUpdate}
+                onCancel={onCancel}
+                submitText={loading ? "Збереження..." : "Зберегти"}
+                isSubmitting={loading}
+            />
+        </div>
     );
 };

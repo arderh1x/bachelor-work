@@ -55,6 +55,27 @@ export const getFurnitureList: RequestHandler = (req, res) => {
 };
 
 
+export const getFurnitureById: RequestHandler<{ id: string }> = (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const item = db.prepare(`
+            SELECT * FROM furniture 
+            WHERE id = ?
+        `).get(Number(id));
+
+        if (!item) {
+            return res.status(404).json({ error: 'Товар не знайдено.' });
+        }
+
+        res.json(item);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Server error on getting furniture item.' });
+    }
+};
+
+
 export const deleteFurniture: RequestHandler<{ id: string }> = (req, res) => {
     const { id } = req.params;
     const producer_id = req.user.id;

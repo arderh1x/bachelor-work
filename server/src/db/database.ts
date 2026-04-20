@@ -36,7 +36,7 @@ export const initDB = () => {
                 user_id INTEGER PRIMARY KEY,
                 workshop_name TEXT,
                 bio TEXT,
-                payment_methods TEXT;
+                payment_methods TEXT,
                 avatar_url TEXT,
                 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
             )

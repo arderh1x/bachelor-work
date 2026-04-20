@@ -1,3 +1,19 @@
+interface Timestamps {
+    created_at: string;
+}
+
+interface ContactFields {
+    phone: string;
+    delivery_address: string;
+    comment: string | null;
+}
+
+interface BaseProfile {
+    bio: string;
+    avatar_url: string;
+}
+
+
 export interface User {
     id: number;
     username: string;
@@ -6,34 +22,27 @@ export interface User {
     is_producer_mode: boolean;
 }
 
-export interface Producer {
+export interface Producer extends BaseProfile {
     user_id: number;
     workshop_name: string;
-    bio: string;
     payment_methods: string;
-    avatar_url: string;
 }
 
-export interface Customer {
+export interface Customer extends BaseProfile {
     user_id: number;
-    bio: string;
-    avatar_url: string;
 }
 
-export type ProfileResponse = Producer | Customer;
-
-export interface Furniture {
+export interface Furniture extends Timestamps {
     id: number;
     producer_id: number;
     name: string;
     price: number;
     category: string;
     description?: string;
-    image_url?: string | undefined;
-    created_at: string;
+    image_url?: string;
 }
 
-export interface Order {
+export interface Order extends Timestamps, ContactFields {
     id: number;
     customer_id: number;
     producer_id: number;
@@ -41,11 +50,18 @@ export interface Order {
     price_at_order: number;
     status: OrderStatus;
     quantity: number;
-    comment: string | null;
-    phone: string;
-    delivery_address: string;
-    created_at: string;
 }
+
+
+export type ProfileResponse = Producer | Customer;
+export type UpdateProfileDTO = Partial<Omit<Producer, 'user_id'>>;
+
+export type LoginDTO = Pick<User, 'username' | 'password'>;
+export type RegisterDTO = Pick<User, 'username' | 'email' | 'password'>;
+
+export type CreateFurnitureDTO = Omit<Furniture, 'id' | keyof Timestamps | 'producer_id'>;
+
+export type OrderContactDetails = Pick<Order, 'quantity' | keyof ContactFields>;
 
 export interface OrderWithDetails extends Order {
     furniture?: Furniture;
@@ -54,20 +70,18 @@ export interface OrderWithDetails extends Order {
     total_price: number;
 }
 
+export interface CreateOrderDTO extends OrderContactDetails {
+    furniture_id?: number;
+    producer_id?: number;
+    customFurniture?: CreateFurnitureDTO;
+}
+
+
 export interface StatusMessage {
     text: string;
     type: 'success' | 'error' | 'info' | null;
 }
 
-export type CreateFurnitureDTO = Omit<Furniture, 'id' | 'created_at' | 'producer_id'>;
-export type LoginDTO = Pick<User, 'username' | 'password'>;
-export type RegisterDTO = Pick<User, 'username' | 'email' | 'password'>;
-export type UpdateProfileDTO = Partial<Pick<Producer, 'workshop_name' | 'bio' | 'avatar_url' | 'payment_methods'>>;
-export type CreateOrderDTO = Pick<Order, 'quantity' | 'comment' | 'phone' | 'delivery_address'> & {
-    furniture_id?: number;
-    producer_id?: number;
-    customFurniture?: CreateFurnitureDTO
-};
 
 export enum FurnitureCategory {
     TABLE = 'Table',

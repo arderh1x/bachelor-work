@@ -13,6 +13,12 @@ export const furnitureApi = {
     getByProducer: (id: number) =>
         api.get<Furniture[]>(`${FURNITURE_URL}/producer/${id}`).then(r => r.data),
 
+    getById: async (id: number): Promise<Furniture> => {
+        const res = await fetch(`/api/furniture/${id}`);
+        if (!res.ok) throw new Error('Товар не знайдено');
+        return res.json();
+    },
+
     delete: (id: number) =>
         api.delete(`${FURNITURE_URL}/${id}`),
 

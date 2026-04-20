@@ -1,22 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FurnitureCategory, type CreateFurnitureDTO } from '@shared/types';
 import styles from './Furniture.module.css';
 
 interface Props {
     initialData: CreateFurnitureDTO;
-    onSubmit: (data: CreateFurnitureDTO) => Promise<void>;
+    onSubmit: (data: CreateFurnitureDTO) => void;
     onCancel?: () => void;
     submitText: string;
     isSubmitting: boolean;
 }
 
 export const FurnBaseForm = ({ initialData, onSubmit, onCancel, submitText, isSubmitting }: Props) => {
-    const [formData, setFormData] = React.useState<CreateFurnitureDTO>(initialData);
+    const [formData, setFormData] = useState<CreateFurnitureDTO>(initialData);
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        await onSubmit(formData);
+        onSubmit(formData);
     };
+
+    const updateField = <K extends keyof CreateFurnitureDTO>(key: K, value: CreateFurnitureDTO[K]) =>
+        setFormData(prev => ({ ...prev, [key]: value }));
 
     return (
         <form onSubmit={handleSubmit} className={styles.baseForm}>
@@ -25,7 +28,7 @@ export const FurnBaseForm = ({ initialData, onSubmit, onCancel, submitText, isSu
                 <input
                     type="text"
                     value={formData.name}
-                    onChange={e => setFormData({ ...formData, name: e.target.value })}
+                    onChange={e => updateField('name', e.target.value)}
                     required
                 />
             </div>
@@ -34,8 +37,9 @@ export const FurnBaseForm = ({ initialData, onSubmit, onCancel, submitText, isSu
                 <label>Ціна (грн):</label>
                 <input
                     type="number"
+                    min="0"
                     value={formData.price}
-                    onChange={e => setFormData({ ...formData, price: Number(e.target.value) })}
+                    onChange={e => updateField('price', Number(e.target.value))}
                     required
                 />
             </div>
@@ -44,7 +48,7 @@ export const FurnBaseForm = ({ initialData, onSubmit, onCancel, submitText, isSu
                 <label>Категорія:</label>
                 <select
                     value={formData.category}
-                    onChange={e => setFormData({ ...formData, category: e.target.value })}
+                    onChange={e => updateField('category', e.target.value)}
                 >
                     {Object.entries(FurnitureCategory).map(([key, value]) => (
                         <option key={key} value={value}>{value}</option>
@@ -53,19 +57,38 @@ export const FurnBaseForm = ({ initialData, onSubmit, onCancel, submitText, isSu
             </div>
 
             <div className={styles.formGroup}>
+                <label>Посилання на зображення (URL):</label>
+                <input
+                    type="url"
+                    placeholder="https://example.com/photo.jpg"
+                    value={formData.image_url || ''}
+                    onChange={e => updateField('image_url', e.target.value)}
+                />
+            </div>
+
+            <div className={styles.formGroup}>
                 <label>Опис:</label>
                 <textarea
-                    value={formData.description}
-                    onChange={e => setFormData({ ...formData, description: e.target.value })}
+                    value={formData.description || ''}
+                    onChange={e => updateField('description', e.target.value)}
                 />
             </div>
 
             <div className={styles.formActions}>
-                <button type="submit" disabled={isSubmitting} className={styles.submitBtn}>
+                <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className={styles.submitBtn}
+                >
                     {isSubmitting ? 'Зачекайте...' : submitText}
                 </button>
+
                 {onCancel && (
-                    <button type="button" onClick={onCancel} className={styles.cancelBtn}>
+                    <button
+                        type="button"
+                        onClick={onCancel}
+                        className={styles.cancelBtn}
+                    >
                         Скасувати
                     </button>
                 )}

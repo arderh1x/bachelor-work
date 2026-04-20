@@ -1,12 +1,8 @@
-import { useState } from 'react';
-import styles from './OrderForm.module.css';
+import React, { useState } from 'react';
+import type { CreateOrderDTO } from '@shared/types';
+import styles from './Order.module.css';
 
-interface OrderContactData {
-    quantity: number;
-    phone: string;
-    delivery_address: string;
-    comment: string;
-}
+export type OrderContactData = Pick<CreateOrderDTO, 'quantity' | 'phone' | 'delivery_address' | 'comment'>;
 
 interface OrderFormProps {
     onSubmit: (data: OrderContactData) => void;
@@ -15,7 +11,7 @@ interface OrderFormProps {
     showQuantity?: boolean;
 }
 
-export function OrderForm({ onSubmit, onCancel, submitText = "Підтвердити замовлення", showQuantity = true }: OrderFormProps) {
+export const OrderForm = ({ onSubmit, onCancel, submitText = "Підтвердити замовлення", showQuantity = true }: OrderFormProps) => {
     const [formData, setFormData] = useState<OrderContactData>({
         quantity: 1,
         phone: '',
@@ -28,49 +24,51 @@ export function OrderForm({ onSubmit, onCancel, submitText = "Підтверди
         onSubmit(formData);
     };
 
+    const updateField = <K extends keyof OrderContactData>(key: K, value: OrderContactData[K]) =>
+        setFormData(prev => ({ ...prev, [key]: value }));
+
     return (
-        <form className={styles.form} onSubmit={handleSubmit}>
+        <form className={styles.orderForm} onSubmit={handleSubmit}>
             {showQuantity && (
-                <div className={styles.field}>
-                    <label>Кількість</label>
+                <div className={styles.formGroup}>
+                    <label>Кількість:</label>
                     <input
                         type="number"
                         min="1"
                         value={formData.quantity}
-                        onChange={e => setFormData({ ...formData, quantity: Number(e.target.value) })}
+                        onChange={e => updateField('quantity', Math.max(1, Number(e.target.value)))}
                         required
                     />
                 </div>
             )}
 
-            <div className={styles.field}>
-                <label>Номер телефону</label>
+            <div className={styles.formGroup}>
+                <label>Телефон:</label>
                 <input
                     type="tel"
                     placeholder="+380..."
                     value={formData.phone}
-                    onChange={e => setFormData({ ...formData, phone: e.target.value })}
+                    onChange={e => updateField('phone', e.target.value)}
                     required
                 />
             </div>
 
-            <div className={styles.field}>
-                <label>Адреса доставки</label>
+            <div className={styles.formGroup}>
+                <label>Адреса доставки:</label>
                 <input
                     type="text"
-                    placeholder="Місто, відділення або вулиця..."
+                    placeholder="Місто, відділення або вулиця"
                     value={formData.delivery_address}
-                    onChange={e => setFormData({ ...formData, delivery_address: e.target.value })}
+                    onChange={e => updateField('delivery_address', e.target.value)}
                     required
                 />
             </div>
 
-            <div className={styles.field}>
-                <label>Коментар (необов'язково)</label>
+            <div className={styles.formGroup}>
+                <label>Коментар:</label>
                 <textarea
-                    value={formData.comment}
-                    onChange={e => setFormData({ ...formData, comment: e.target.value })}
-                    placeholder="Наприклад: колір оббивки, зручний час дзвінка..."
+                    value={formData.comment || ''}
+                    onChange={e => updateField('comment', e.target.value)}
                 />
             </div>
 
@@ -80,4 +78,4 @@ export function OrderForm({ onSubmit, onCancel, submitText = "Підтверди
             </div>
         </form>
     );
-}
+};
