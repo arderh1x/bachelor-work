@@ -1,24 +1,50 @@
-import { useAuth } from '@/hooks/useAuth';
-import { Link } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import layout from '@/styles/Layout.module.css';
+import { FurnInventory } from './FurnInventory';
+
+const OrdersPage = () => (
+    <div className={layout.pageContainer}>
+        <header className={layout.header}>
+            <h1 className={layout.title}>Вхідні замовлення</h1>
+            <p className={layout.subtitle}>Керуйте запитами від ваших клієнтів</p>
+        </header>
+        {/* Сюди потім додамо компонент списку замовлень */}
+        <p>Список замовлень порожній...</p>
+    </div>
+);
+
+const ProfileEditPage = () => (
+    <div className={layout.pageContainer}>
+        <header className={layout.header}>
+            <h1 className={layout.title}>Налаштування майстерні</h1>
+            <p className={layout.subtitle}>Редагуйте інформацію, яку бачать клієнти</p>
+        </header>
+        {/* Сюди піде форма редагування профілю */}
+        <p>Налаштування профілю в розробці...</p>
+    </div>
+);
 
 const PHome = () => {
-    const { user } = useAuth();
-
     return (
-        <div className="producer-home">
-            <h1>Вітаємо, {user?.username}!</h1>
-            <p>Це ваша панель керування виробництвом.</p>
+        <div className="producer-layout">
+            <Routes>
+                <Route path="/" element={<Navigate to="/inventory" replace />} />
 
-            <div className="dashboard-grid">
-                <Link to="/inventory" className="dashboard-card">
-                    <h3>Мій Склад</h3>
-                    <p>Керування асортиментом меблів</p>
-                </Link>
-                <Link to="/orders" className="dashboard-card">
-                    <h3>Замовлення</h3>
-                    <p>Перегляд та оновлення статусів</p>
-                </Link>
-            </div>
+                <Route path="/inventory" element={
+                    <div className={layout.pageContainer}>
+                        <header className={layout.header}>
+                            <h1 className={layout.title}>Керування складом</h1>
+                            <p className={layout.subtitle}>Додавайте нові меблі та оновлюйте поточний асортимент</p>
+                        </header>
+                        <FurnInventory />
+                    </div>
+                } />
+
+                <Route path="/orders" element={<OrdersPage />} />
+                <Route path="/profile/edit" element={<ProfileEditPage />} />
+
+                <Route path="*" element={<Navigate to="/inventory" replace />} />
+            </Routes>
         </div>
     );
 };

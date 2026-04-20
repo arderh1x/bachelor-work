@@ -5,12 +5,12 @@ import { verifyToken } from '@/middlewares/authMiddlewares.js';
 const router = Router();
 
 router.get('/producer/:producerId', getFurnitureList);
+router.get('/my', verifyToken, getFurnitureList);
+
 router.get('/:id', getFurnitureById);
 
 router.use(verifyToken);
-
 router.post('/', createFurniture);
-router.get('/my', getFurnitureList);
 router.delete('/:id', deleteFurniture);
 router.put('/:id', updateFurniture);
 

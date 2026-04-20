@@ -9,7 +9,7 @@ import type { Furniture, Producer } from '@shared/types';
 import layout from '@/styles/Layout.module.css';
 import styles from '@/components/Furniture/Furniture.module.css';
 
-export default function CProducerDetails() {
+export default function ProducerDetails() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
 
@@ -50,7 +50,6 @@ export default function CProducerDetails() {
                         <button
                             className={styles.orderBtn}
                             style={{ borderRadius: '8px', width: 'auto', padding: '12px 24px' }}
-                            // Перехід на сторінку кастомного замовлення (двокрокова форма)
                             onClick={() => navigate(`/order/custom/${producer.user_id}`)}
                         >
                             ✨ Замовити щось унікальне
