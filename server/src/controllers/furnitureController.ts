@@ -2,22 +2,31 @@ import db from '../db/database.js';
 import type { RequestHandler } from 'express';
 import type { CreateFurnitureDTO } from '@shared/types.js';
 
+export const insertFurniture = (producer_id: number, data: CreateFurnitureDTO, is_custom: number = 0) => {
+    const stmt = db.prepare(`
+        INSERT INTO furniture (producer_id, name, category, price, description, image_url, is_custom)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    `);
+
+    const result = stmt.run(
+        producer_id,
+        data.name,
+        data.category,
+        Number(data.price),
+        data.description ?? null,
+        data.image_url ?? null,
+        is_custom
+    );
+
+    return result.lastInsertRowid;
+};
+
+
 export const createFurniture: RequestHandler<{}, any, CreateFurnitureDTO> = (req, res) => {
-    const { name, category, price, description } = req.body;
     const producer_id = req.user.id;
-
     try {
-        const stmt = db.prepare(`
-            INSERT INTO furniture (producer_id, name, category, price, description)
-            VALUES (?, ?, ?, ?, ?)
-        `);
-
-        const result = stmt.run(producer_id, name, category, Number(price), description ?? null);
-
-        res.status(201).json({
-            id: result.lastInsertRowid,
-            message: 'Furniture successfully created!'
-        });
+        const id = insertFurniture(producer_id, req.body);
+        res.status(201).json({ id, message: 'Furniture successfully created!' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Server error on creating furniture.' });
@@ -33,8 +42,11 @@ export const getFurnitureList: RequestHandler = (req, res) => {
     if (!targetProducerId) return res.status(400).json({ error: 'Producer ID is required.' });
 
     try {
-        const items = db.prepare(`SELECT * FROM furniture WHERE producer_id = ? ORDER BY created_at DESC`)
-            .all(targetProducerId);
+        const items = db.prepare(`
+            SELECT * FROM furniture 
+            WHERE producer_id = ? AND is_custom = 0 
+            ORDER BY created_at DESC
+        `).all(targetProducerId);
         res.json(items);
     } catch (error) {
         console.error(error);

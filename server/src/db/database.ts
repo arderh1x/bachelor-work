@@ -36,6 +36,7 @@ export const initDB = () => {
                 user_id INTEGER PRIMARY KEY,
                 workshop_name TEXT,
                 bio TEXT,
+                payment_methods TEXT;
                 avatar_url TEXT,
                 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
             )
@@ -62,8 +63,12 @@ export const initDB = () => {
                 customer_id INTEGER NOT NULL,
                 producer_id INTEGER NOT NULL,
                 furniture_id INTEGER NOT NULL,
-                budget REAL,
-                status TEXT DEFAULT 'pending', -- pending, accepted, rejected, completed
+                quantity INTEGER DEFAULT 1,
+                price_at_order REAL NOT NULL,
+                comment TEXT,
+                phone TEXT NOT NULL,
+                delivery_address TEXT NOT NULL,
+                status TEXT DEFAULT 'pending', -- pending, accepted, rejected, payed, completed
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (customer_id) REFERENCES users(id) ON DELETE CASCADE,
                 FOREIGN KEY (producer_id) REFERENCES producer_profiles(user_id) ON DELETE CASCADE,

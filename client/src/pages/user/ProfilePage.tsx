@@ -17,9 +17,10 @@ const ProfilePage = () => {
             const data = await profilesApi.getMe();
             setProfile(data);
             setFormData({
-                workshop_name: 'workshop_name' in data ? data.workshop_name : '',
-                bio: data.bio || '',
-                avatar_url: data.avatar_url || ''
+                workshop_name: ('workshop_name' in data ? data.workshop_name : '') ?? '',
+                bio: data.bio ?? '',
+                avatar_url: data.avatar_url ?? '',
+                payment_methods: ('payment_methods' in data ? data.payment_methods : '') ?? ''
             });
         } catch (err) {
             console.error("Error loading profile:", err);
@@ -55,29 +56,39 @@ const ProfilePage = () => {
                 <div className={styles.profileCard}>
                     <div className={styles.avatarSection}>
                         <img src={formData.avatar_url || 'https://placehold.co/600x400'} className={styles.avatar} alt="Preview" />
-                        <input 
-                            type="text" 
-                            placeholder="Avatar URL" 
-                            value={formData.avatar_url} 
-                            onChange={e => setFormData({...formData, avatar_url: e.target.value})} 
+                        <input
+                            type="text"
+                            placeholder="Avatar URL"
+                            value={formData.avatar_url}
+                            onChange={e => setFormData({ ...formData, avatar_url: e.target.value })}
                         />
                     </div>
 
                     <div className={styles.infoSection}>
                         {user?.is_producer_mode && (
-                            <div className={styles.field}>
-                                <label>Workshop Name</label>
-                                <input 
-                                    value={formData.workshop_name} 
-                                    onChange={e => setFormData({...formData, workshop_name: e.target.value})} 
-                                />
-                            </div>
+                            <>
+                                <div className={styles.field}>
+                                    <label>Workshop Name</label>
+                                    <input
+                                        value={formData.workshop_name}
+                                        onChange={e => setFormData({ ...formData, workshop_name: e.target.value })}
+                                    />
+                                </div>
+                                <div className={styles.field}>
+                                    <label>Payment Methods</label>
+                                    <input
+                                        placeholder="e.g. Card, Cash, PayPal"
+                                        value={formData.payment_methods}
+                                        onChange={e => setFormData({ ...formData, payment_methods: e.target.value })}
+                                    />
+                                </div>
+                            </>
                         )}
                         <div className={styles.field}>
                             <label>Bio</label>
-                            <textarea 
-                                value={formData.bio} 
-                                onChange={e => setFormData({...formData, bio: e.target.value})} 
+                            <textarea
+                                value={formData.bio}
+                                onChange={e => setFormData({ ...formData, bio: e.target.value })}
                             />
                         </div>
                     </div>
@@ -89,9 +100,9 @@ const ProfilePage = () => {
                 </div>
             ) : (
                 <ProfileCard
-                    profile={profile} 
-                    isEditable={true} 
-                    onEdit={() => setIsEditing(true)} 
+                    profile={profile}
+                    isEditable={true}
+                    onEdit={() => setIsEditing(true)}
                 />
             )}
         </div>
