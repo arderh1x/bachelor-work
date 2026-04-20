@@ -10,6 +10,9 @@ export const profilesApi = {
     updateMe: async (data: UpdateProfileDTO): Promise<{ message: string }> =>
         api.put(`${PROFILES_URL}/me`, data).then(r => r.data),
 
-    getById: async (id: number): Promise<Producer> => 
+    getById: async (id: number): Promise<Producer> =>
         api.get(`${PROFILES_URL}/producers/${id}`).then(r => r.data),
+
+    getAllProducers: async (): Promise<Producer[]> =>
+        api.get(`${PROFILES_URL}/producers`).then(r => r.data),
 };

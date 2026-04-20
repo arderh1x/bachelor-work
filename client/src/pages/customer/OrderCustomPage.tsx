@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { FurnitureCategory, type CreateFurnitureDTO, type CreateOrderDTO } from '@shared/types';
 import { ordersApi } from '@/api/orders';
 
-import layout from './Layout.module.css';
+import layout from '@/styles/Layout.module.css';
 import styles from './OrderCustom.module.css';
 import { OrderForm, type OrderContactData } from '@/components/Order/OrderForm';
 import { FurnBaseForm } from '@/components/Furniture/FurnBaseForm';

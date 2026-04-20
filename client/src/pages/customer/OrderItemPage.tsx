@@ -4,7 +4,7 @@ import { furnitureApi } from '@/api/furniture';
 import { ordersApi } from '@/api/orders';
 import type { Furniture, CreateOrderDTO } from '@shared/types';
 
-import layout from './Layout.module.css';
+import layout from '@/styles/Layout.module.css';
 import styles from './OrderCustom.module.css';
 import { OrderForm, type OrderContactData } from '@/components/Order/OrderForm';
 

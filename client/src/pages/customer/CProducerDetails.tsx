@@ -6,7 +6,7 @@ import { FurnList } from '@/components/Furniture/FurnList';
 import { ProfileCard } from '../user/ProfileCard';
 import type { Furniture, Producer } from '@shared/types';
 
-import layout from './Layout.module.css';
+import layout from '@/styles/Layout.module.css';
 import styles from '@/components/Furniture/Furniture.module.css';
 
 export default function CProducerDetails() {
