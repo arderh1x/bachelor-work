@@ -1,5 +1,5 @@
 import React from 'react';
-import { FurnitureCategories, type CreateFurnitureDTO } from '@shared/types';
+import { FurnitureCategory, type CreateFurnitureDTO } from '@shared/types';
 import styles from './Furniture.module.css';
 
 interface Props {
@@ -46,7 +46,7 @@ export const FurnBaseForm = ({ initialData, onSubmit, onCancel, submitText, isSu
                     value={formData.category}
                     onChange={e => setFormData({ ...formData, category: e.target.value })}
                 >
-                    {Object.entries(FurnitureCategories).map(([key, value]) => (
+                    {Object.entries(FurnitureCategory).map(([key, value]) => (
                         <option key={key} value={value}>{value}</option>
                     ))}
                 </select>

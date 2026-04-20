@@ -19,6 +19,8 @@ export interface Customer {
     avatar_url: string;
 }
 
+export type ProfileResponse = Producer | Customer;
+
 export interface Furniture {
     id: number;
     producer_id: number;
@@ -30,17 +32,31 @@ export interface Furniture {
     created_at: string;
 }
 
+export interface Order {
+    id: number;
+    customer_id: number;
+    producer_id: number;
+    furniture_id: number;
+    status: OrderStatus;
+    quantity: number;
+    total_price: number;
+    comment?: string;
+    created_at: string;
+}
+
+
 export type CreateFurnitureDTO = Omit<Furniture, 'id' | 'created_at' | 'producer_id'>;
 export type LoginDTO = Pick<User, 'username' | 'password'>;
 export type RegisterDTO = Pick<User, 'username' | 'email' | 'password'>;
 export type UpdateProfileDTO = Partial<Pick<Producer, 'workshop_name' | 'bio' | 'avatar_url'>>;
+export type CreateOrderDTO = Pick<Order, 'furniture_id' | 'quantity' | 'comment'>
 
 export interface StatusMessage {
     text: string;
     type: 'success' | 'error' | 'info' | null;
 }
 
-export enum FurnitureCategories {
+export enum FurnitureCategory {
     TABLE = 'Table',
     CHAIR = 'Chair',
     WARDROBE = 'Wardrobe',
@@ -49,4 +65,9 @@ export enum FurnitureCategories {
     OTHER = 'Other'
 }
 
-export type ProfileResponse = Producer | Customer;
+export enum OrderStatus {
+    PENDING = 'Pending',
+    ACCEPTED = 'Accepted',
+    COMPLETED = 'Completed',
+    CANCELLED = 'Cancelled'
+}
