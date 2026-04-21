@@ -1,0 +1,40 @@
+.listContainer {
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+}
+
+.emptyState {
+    text-align: center;
+    padding: 3rem;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 2px dashed #e2e8f0;
+    color: #64748b;
+}
+
+.error {
+    text-align: center;
+    color: #ef4444;
+}
+
+.retryBtn {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+@media (max-width: 640px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}

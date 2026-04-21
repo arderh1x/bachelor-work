@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import type { CreateOrderDTO } from '@shared/types';
-import styles from './Order.module.css';
+import styles from './OrderForm.module.css';
 
 export type OrderContactData = Pick<CreateOrderDTO, 'quantity' | 'phone' | 'delivery_address' | 'comment'>;
 

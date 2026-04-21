@@ -22,6 +22,8 @@ export const createOrder = async (req: Request, res: Response) => {
         let finalProducerId = producer_id;
         let finalPrice = 0;
 
+        if (customer_id === finalProducerId) return res.status(400).json({ error: "You can't order to yourself." });
+
         if (customFurniture) {
             finalFurnitureId = Number(insertFurniture(producer_id, customFurniture, 1));
             finalPrice = customFurniture.price;
@@ -160,5 +162,26 @@ export const getOrders = async (req: Request, res: Response) => {
     } catch (error) {
         console.error("Fetch orders error:", error);
         res.status(500).json({ message: "Server error on getting orders list." });
+    }
+};
+
+
+export const updateOrderStatus = async (req: Request, res: Response) => {
+    const id = req.params.id as string;
+    const { status } = req.body as { status: OrderStatus };
+    const producer_id = req.user.id;
+
+    if (!id || !status) return res.status(400).json({ error: "Order ID and status are required" });
+    try {
+        const order = db.prepare('SELECT id FROM orders WHERE id = ? AND producer_id = ?')
+            .get(id, producer_id);
+        if (!order) return res.status(404).json({ error: "Order not found or access denied" });
+
+        db.prepare('UPDATE orders SET status = ? WHERE id = ?')
+            .run(String(status), id);
+        res.json({ message: `Order status updated to ${status}` });
+    } catch (error) {
+        console.error("Update order error:", error);
+        res.status(500).json({ error: "Server error" });
     }
 };

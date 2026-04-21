@@ -1,4 +1,4 @@
-import type { CreateOrderDTO, OrderWithDetails } from '@shared/types';
+import type { CreateOrderDTO, OrderStatus, OrderWithDetails } from '@shared/types';
 import api from './axios';
 
 const ORDERS_URL = '/orders';
@@ -10,7 +10,6 @@ export const ordersApi = {
     getMyOrders: () =>
         api.get<OrderWithDetails[]>(ORDERS_URL).then(r => r.data),
 
-    // updateStatus: (id: number, status: string) =>
-    //     api.patch(`/api/orders/${id}`, { status })
-    //         .then(res => res.data),
+    updateStatus: (id: number, status: OrderStatus) =>
+        api.patch<{ message: string }>(`${ORDERS_URL}/${id}/status`, { status }).then(r => r.data),
 };

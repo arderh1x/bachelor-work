@@ -18,14 +18,22 @@ const Navbar = () => {
             <div className={styles.leftSection}>
                 <Link to="/" className={styles.navLink}>Main page</Link>
                 {!loading && user && (
-                    <Link to="/profile" className={styles.profileLink}>
-                        Hello, <strong>{user.username}</strong>!
-                    </Link>
+                    <>
+                        <Link to="/profile" className={styles.profileLink}>
+                            Hello, <strong>{user.username}</strong>!
+                        </Link>
+
+                        <Link
+                            to={user.is_producer_mode ? "/orders" : "/my-orders"}
+                            className={styles.navLink}
+                        >
+                            {user.is_producer_mode ? '📥 Incoming Orders' : '📦 My Orders'}
+                        </Link>
+                    </>
                 )}
             </div>
 
             <div className={styles.rightSection}>
-
                 {!loading ? (
                     !user ? (
                         <>
@@ -39,7 +47,7 @@ const Navbar = () => {
                                 className={`${styles.modeBtn} ${user.is_producer_mode ? styles.producerActive : styles.customerActive
                                     }`}
                             >
-                                {user.is_producer_mode ? 'Producer Mode' : 'Customer Mode'} (click to switch)
+                                {user.is_producer_mode ? 'Producer Mode' : 'Customer Mode'} (switch)
                             </button>
                             <button onClick={handleLogout} className={styles.logoutBtn}>Logout</button>
                         </>

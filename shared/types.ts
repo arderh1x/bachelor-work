@@ -95,7 +95,9 @@ export enum FurnitureCategory {
 export enum OrderStatus {
     PENDING = 'Pending',
     ACCEPTED = 'Accepted',
+    IN_PROGRESS = 'In-Progress',
+    SHIPPED = 'Shipped',
     COMPLETED = 'Completed',
-    PAID = 'Paid',
+    REJECTED = 'Rejected',
     CANCELLED = 'Cancelled'
 }

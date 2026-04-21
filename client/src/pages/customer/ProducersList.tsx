@@ -1,12 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { profilesApi } from '@/api/profiles';
+import { useAuth } from '@/hooks/useAuth';
 import type { Producer } from '@shared/types';
 
 import layout from '@/styles/Layout.module.css';
 import styles from './Producers.module.css';
 
 export const ProducersList = () => {
+    const { user } = useAuth();
     const [producers, setProducers] = useState<Producer[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -21,6 +23,11 @@ export const ProducersList = () => {
             .finally(() => setLoading(false));
     }, []);
 
+    const filteredProducers = useMemo(() => {
+        if (!user) return producers;
+        return producers.filter(p => p.user_id !== user.id);
+    }, [producers, user]);
+
     if (loading) return <div className={layout.pageContainer}>Завантаження майстрів...</div>;
 
     return (
@@ -33,8 +40,8 @@ export const ProducersList = () => {
             {error && <div className={styles.errorBadge}>{error}</div>}
 
             <div className={styles.producersGrid}>
-                {producers.length > 0 ? (
-                    producers.map(p => (
+                {filteredProducers.length > 0 ? (
+                    filteredProducers.map(p => (
                         <article key={p.user_id} className={styles.producerCard}>
                             <div className={styles.imageWrapper}>
                                 {p.avatar_url ? (
@@ -55,7 +62,9 @@ export const ProducersList = () => {
                         </article>
                     ))
                 ) : (
-                    <p>Наразі немає зареєстрованих майстрів.</p>
+                    <div className={styles.emptyState}>
+                        <p>Наразі немає інших зареєстрованих майстрів.</p>
+                    </div>
                 )}
             </div>
         </div>

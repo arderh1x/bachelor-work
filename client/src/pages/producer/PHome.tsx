@@ -1,6 +1,8 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import layout from '@/styles/Layout.module.css';
 import { FurnInventory } from './FurnInventory';
+import ProfilePage from '@/pages/user/ProfilePage';
+import { OrderList } from '@/components/Order/OrdersList';
 
 const OrdersPage = () => (
     <div className={layout.pageContainer}>
@@ -8,19 +10,7 @@ const OrdersPage = () => (
             <h1 className={layout.title}>Вхідні замовлення</h1>
             <p className={layout.subtitle}>Керуйте запитами від ваших клієнтів</p>
         </header>
-        {/* Сюди потім додамо компонент списку замовлень */}
-        <p>Список замовлень порожній...</p>
-    </div>
-);
-
-const ProfileEditPage = () => (
-    <div className={layout.pageContainer}>
-        <header className={layout.header}>
-            <h1 className={layout.title}>Налаштування майстерні</h1>
-            <p className={layout.subtitle}>Редагуйте інформацію, яку бачать клієнти</p>
-        </header>
-        {/* Сюди піде форма редагування профілю */}
-        <p>Налаштування профілю в розробці...</p>
+        <OrderList mode="producer" />
     </div>
 );
 
@@ -41,7 +31,8 @@ const PHome = () => {
                 } />
 
                 <Route path="/orders" element={<OrdersPage />} />
-                <Route path="/profile/edit" element={<ProfileEditPage />} />
+
+                <Route path="/profile" element={<ProfilePage />} />
 
                 <Route path="*" element={<Navigate to="/inventory" replace />} />
             </Routes>

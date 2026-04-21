@@ -5,6 +5,7 @@ import { OrderItemPage } from './OrderItemPage';
 import layout from '@/styles/Layout.module.css';
 import { ProducersList } from './ProducersList';
 import ProducerDetails from './ProducerDetails';
+import { OrderList } from '@/components/Order/OrdersList';
 
 const CHome = () => {
     return (
@@ -16,8 +17,11 @@ const CHome = () => {
 
                 <Route path="/my-orders" element={
                     <div className={layout.pageContainer}>
-                        <h2>Мої замовлення</h2>
-                        <p>Тут буде список ваших запитів...</p>
+                        <header className={layout.header}>
+                            <h2 className={layout.title}>Мої замовлення</h2>
+                        </header>
+
+                        <OrderList mode="customer" />
                     </div>
                 } />
 
