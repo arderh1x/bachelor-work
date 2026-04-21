@@ -1,122 +1,63 @@
-import db from '../db/database.js';
 import type { RequestHandler } from 'express';
+import { FurnitureModel } from '../models/furnitureModel.js';
 import type { CreateFurnitureDTO } from '@shared/types.js';
 
-export const insertFurniture = (producer_id: number, data: CreateFurnitureDTO, is_custom: number = 0) => {
-    const stmt = db.prepare(`
-        INSERT INTO furniture (producer_id, name, category, price, description, image_url, is_custom)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-    `);
-
-    const result = stmt.run(
-        producer_id,
-        data.name,
-        data.category,
-        Number(data.price),
-        data.description ?? null,
-        data.image_url ?? null,
-        is_custom
-    );
-
-    return result.lastInsertRowid;
+export const insertFurniture = (producerId: number, data: CreateFurnitureDTO, isCustom: number = 0) => {
+    return FurnitureModel.create(producerId, data, isCustom);
 };
-
 
 export const createFurniture: RequestHandler<{}, any, CreateFurnitureDTO> = (req, res) => {
-    const producer_id = req.user.id;
     try {
-        const id = insertFurniture(producer_id, req.body);
-        res.status(201).json({ id, message: 'Furniture successfully created!' });
+        const id = FurnitureModel.create(req.user.id, req.body);
+        res.status(201).json({ id, message: 'Furniture created successfully!' });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Server error on creating furniture.' });
+        console.error('[FurnitureController: createFurniture] Error:', error);
+        res.status(500).json({ error: 'Internal server error while creating furniture.' });
     }
 };
-
 
 export const getFurnitureList: RequestHandler = (req, res) => {
-    const targetProducerId = req.params.producerId
-        ? Number(req.params.producerId)
-        : req.user?.id;
-
-    if (!targetProducerId) return res.status(400).json({ error: 'Producer ID is required.' });
+    const producerId = req.params.producerId ? Number(req.params.producerId) : req.user?.id;
+    if (!producerId) return res.status(400).json({ error: 'Producer ID is required.' });
 
     try {
-        const items = db.prepare(`
-            SELECT * FROM furniture 
-            WHERE producer_id = ? AND is_custom = 0 
-            ORDER BY created_at DESC
-        `).all(targetProducerId);
+        const items = FurnitureModel.getByProducer(producerId);
         res.json(items);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Server error on getting furniture list.' });
+        console.error('[FurnitureController: getFurnitureList] Error:', error);
+        res.status(500).json({ error: 'Internal server error while fetching furniture list.' });
     }
 };
-
 
 export const getFurnitureById: RequestHandler<{ id: string }> = (req, res) => {
-    const { id } = req.params;
-
     try {
-        const item = db.prepare(`
-            SELECT * FROM furniture 
-            WHERE id = ?
-        `).get(Number(id));
-
-        if (!item) {
-            return res.status(404).json({ error: 'Товар не знайдено.' });
-        }
-
+        const item = FurnitureModel.getById(Number(req.params.id));
+        if (!item) return res.status(404).json({ error: 'Furniture item not found.' });
         res.json(item);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Server error on getting furniture item.' });
+        console.error('[FurnitureController: getFurnitureById] Error:', error);
+        res.status(500).json({ error: 'Internal server error while fetching furniture item.' });
     }
 };
-
-
-export const deleteFurniture: RequestHandler<{ id: string }> = (req, res) => {
-    const { id } = req.params;
-    const producer_id = req.user.id;
-
-    try {
-        const result = db.prepare('DELETE FROM furniture WHERE id = ? AND producer_id = ?')
-            .run(Number(id), producer_id);
-
-        if (result.changes === 0) {
-            res.status(404).json({ error: 'Product not found or access denied.' });
-            return;
-        }
-
-        res.sendStatus(204);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Server error on deleting furniture.' });
-    }
-};
-
 
 export const updateFurniture: RequestHandler<{ id: string }> = (req, res) => {
-    const { id } = req.params;
-    const { name, price, category, description, image_url } = req.body;
-    const producer_id = req.user.id;
-
     try {
-        const result = db.prepare(`
-            UPDATE furniture 
-            SET name = ?, price = ?, category = ?, description = ?, image_url = ?
-            WHERE id = ? AND producer_id = ?
-        `).run(name, price, category, description, image_url, Number(id), producer_id);
-
-        if (result.changes === 0) {
-            res.status(404).json({ error: 'Product not found or access denied.' });
-            return;
-        }
-
-        res.json({ message: 'Product updated successfully' });
+        const result = FurnitureModel.update(Number(req.params.id), req.user.id, req.body);
+        if (result.changes === 0) return res.status(404).json({ error: 'Furniture not found or access denied.' });
+        res.json({ message: 'Furniture updated successfully.' });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Server error on updating furniture.' });
+        console.error('[FurnitureController: updateFurniture] Error:', error);
+        res.status(500).json({ error: 'Internal server error while updating furniture.' });
+    }
+};
+
+export const deleteFurniture: RequestHandler<{ id: string }> = (req, res) => {
+    try {
+        const result = FurnitureModel.delete(Number(req.params.id), req.user.id);
+        if (result.changes === 0) return res.status(404).json({ error: 'Furniture not found or access denied.' });
+        res.sendStatus(204);
+    } catch (error) {
+        console.error('[FurnitureController: deleteFurniture] Error:', error);
+        res.status(500).json({ error: 'Internal server error while deleting furniture.' });
     }
 };

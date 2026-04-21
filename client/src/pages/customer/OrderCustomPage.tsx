@@ -60,10 +60,18 @@ export const OrderCustomPage = () => {
                 <main className={styles.formContent}>
                     {step === 1 ? (
                         <FurnBaseForm
-                            initialData={furnData || { name: '', price: 0, category: FurnitureCategory.OTHER, description: '' }}
+                            initialData={
+                                furnData || {
+                                    name: '',
+                                    price: 0,
+                                    category: FurnitureCategory.OTHER,
+                                    description: '',
+                                    image_url: null
+                                }
+                            }
                             onSubmit={handleNextStep}
                             submitText="Далі до контактів"
-                            onCancel={() => navigate(-1)} // Повертаємось на попередню сторінку
+                            onCancel={() => navigate(-1)}
                             isSubmitting={false}
                         />
                     ) : (

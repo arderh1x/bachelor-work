@@ -1,93 +1,66 @@
-import type { Request, Response } from 'express';
-import db from '../db/database.js';
+import type { RequestHandler } from 'express';
+import { ProfileModel } from '../models/profileModel.js';
 
-export const getAllProducers = (req: Request, res: Response) => {
+export const getAllProducers: RequestHandler = (req, res) => {
     try {
-        const producers = db.prepare(`
-            SELECT user_id, workshop_name, bio, avatar_url, payment_methods 
-            FROM producer_profiles
-        `).all();
-
+        const producers = ProfileModel.getAllProducers();
         res.json(producers);
     } catch (error) {
-        console.error('Getting all producers list error:', error);
-        res.status(500).json({ error: "Error getting list of producers" });
+        console.error('[ProfilesController: getAllProducers] Error:', error);
+        res.status(500).json({ error: "Internal server error while fetching producers list." });
     }
 };
 
-export const getProducerById = (req: Request, res: Response) => {
+export const getProducerById: RequestHandler<{ id: string }> = (req, res) => {
     const { id } = req.params;
-    if (!id) return res.status(400).json({ error: "ID is required" });
+    if (!id) return res.status(400).json({ error: "Producer ID is required." });
 
     try {
-        const producer: any = db.prepare(`
-            SELECT user_id, workshop_name, bio, avatar_url, payment_methods 
-            FROM producer_profiles 
-            WHERE user_id = ?
-        `).get(Number(id));
-
-        if (!producer) return res.status(404).json({ error: "Producer not found." });
+        const producer = ProfileModel.getProducerById(Number(id));
+        if (!producer) {
+            return res.status(404).json({ error: "Producer not found." });
+        }
         res.json(producer);
-
     } catch (error) {
-        console.error('Getting producer by id error:', error);
-        res.status(500).json({ error: "Internal server error." });
+        console.error('[ProfilesController: getProducerById] Error:', error);
+        res.status(500).json({ error: "Internal server error while fetching producer profile." });
     }
 };
 
-
-export const getMyProfile = (req: Request, res: Response) => {
+export const getMyProfile: RequestHandler = (req, res) => {
     try {
         const userId = req.user.id;
         const isProducer = req.user.is_producer_mode;
 
-        let profile;
-        if (isProducer) {
-            profile = db.prepare(`
-                SELECT workshop_name, bio, avatar_url, payment_methods 
-                FROM producer_profiles 
-                WHERE user_id = ?
-            `).get(userId);
-        } else {
-            profile = db.prepare('SELECT bio, avatar_url FROM customer_profiles WHERE user_id = ?')
-                .get(userId);
-        }
+        const profile = isProducer
+            ? ProfileModel.getProducerById(userId)
+            : ProfileModel.getCustomerById(userId);
 
-        if (!profile) return res.status(404).json({ error: "Profile not found" });
+        if (!profile) {
+            return res.status(404).json({ error: "Profile not found." });
+        }
 
         res.json(profile);
     } catch (error) {
-        console.error('Getting profile error:', error);
-        res.status(500).json({ error: "Failed to fetch profile" });
+        console.error('[ProfilesController: getMyProfile] Error:', error);
+        res.status(500).json({ error: "Internal server error while fetching your profile." });
     }
 };
 
-
-export const updateProfile = (req: Request, res: Response) => {
+export const updateProfile: RequestHandler = (req, res) => {
     const userId = req.user.id;
-    const { workshop_name, bio, avatar_url, payment_methods } = req.body;
+    const isProducer = req.user.is_producer_mode;
 
     try {
-        const user = db.prepare('SELECT is_producer_mode FROM users WHERE id = ?').get(userId) as { is_producer_mode: number } | undefined;
-        if (!user) return res.status(404).json({ error: 'User not found.' });
-
-        if (user.is_producer_mode) {
-            db.prepare(`
-                UPDATE producer_profiles 
-                SET workshop_name = ?, bio = ?, avatar_url = ?, payment_methods = ? 
-                WHERE user_id = ?
-            `).run(workshop_name, bio, avatar_url, payment_methods, userId);
+        if (isProducer) {
+            ProfileModel.updateProducer(userId, req.body);
         } else {
-            db.prepare(`
-                UPDATE customer_profiles 
-                SET bio = ?, avatar_url = ? 
-                WHERE user_id = ?
-            `).run(bio, avatar_url, userId);
+            ProfileModel.updateCustomer(userId, req.body);
         }
 
-        res.json({ message: "Profile successfully updated!" });
+        res.json({ message: "Profile updated successfully!" });
     } catch (error) {
-        console.error('Update profile error:', error);
-        res.status(500).json({ error: "Failed to update profile" });
+        console.error('[ProfilesController: updateProfile] Error:', error);
+        res.status(500).json({ error: "Internal server error while updating profile." });
     }
 };

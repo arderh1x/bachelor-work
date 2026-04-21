@@ -59,7 +59,7 @@ const ProfilePage = () => {
                         <input
                             type="text"
                             placeholder="Avatar URL"
-                            value={formData.avatar_url}
+                            value={formData.avatar_url ?? ''}
                             onChange={e => setFormData({ ...formData, avatar_url: e.target.value })}
                         />
                     </div>
@@ -78,7 +78,7 @@ const ProfilePage = () => {
                                     <label>Payment Methods</label>
                                     <input
                                         placeholder="e.g. Card, Cash, PayPal"
-                                        value={formData.payment_methods}
+                                        value={formData.payment_methods ?? ''}
                                         onChange={e => setFormData({ ...formData, payment_methods: e.target.value })}
                                     />
                                 </div>
@@ -87,7 +87,7 @@ const ProfilePage = () => {
                         <div className={styles.field}>
                             <label>Bio</label>
                             <textarea
-                                value={formData.bio}
+                                value={formData.bio ?? ''}
                                 onChange={e => setFormData({ ...formData, bio: e.target.value })}
                             />
                         </div>

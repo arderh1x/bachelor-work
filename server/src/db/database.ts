@@ -1,14 +1,18 @@
 import { DatabaseSync } from 'node:sqlite';
-import path from 'node:path';
-import fs from 'node:fs';
+import path from 'path';
+import fs from 'fs';
 import { envConfig } from '../config.js';
 
 const dbFolder = path.resolve(import.meta.dirname, '../../database');
 const dbPath = path.join(dbFolder, envConfig.dbPath);
 
-if (!fs.existsSync(dbFolder)) fs.mkdirSync(dbFolder, { recursive: true });
+if (!fs.existsSync(dbFolder)) {
+    fs.mkdirSync(dbFolder, { recursive: true });
+}
 
 const db = new DatabaseSync(dbPath);
+db.exec('PRAGMA foreign_keys = ON');
+
 export const initDB = () => {
     try {
         db.exec(`
@@ -68,7 +72,7 @@ export const initDB = () => {
                 comment TEXT,
                 phone TEXT NOT NULL,
                 delivery_address TEXT NOT NULL,
-                status TEXT DEFAULT 'pending', -- pending, accepted, rejected, payed, completed
+                status TEXT DEFAULT 'Pending', -- Уніфіковано з Enum
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (customer_id) REFERENCES users(id) ON DELETE CASCADE,
                 FOREIGN KEY (producer_id) REFERENCES producer_profiles(user_id) ON DELETE CASCADE,
@@ -76,9 +80,14 @@ export const initDB = () => {
             )
         `);
 
-        console.log('Database successfully initialized.');
+        db.exec(`CREATE INDEX IF NOT EXISTS idx_furniture_producer ON furniture(producer_id)`);
+        db.exec(`CREATE INDEX IF NOT EXISTS idx_orders_customer ON orders(customer_id)`);
+        db.exec(`CREATE INDEX IF NOT EXISTS idx_orders_producer ON orders(producer_id)`);
+
+        console.log('Database successfully initialized with Foreign Key support.');
     } catch (err: any) {
         console.error('Error initializing database:', err.message);
+        throw err;
     }
 };
 

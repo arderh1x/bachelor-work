@@ -1,41 +1,45 @@
 {
   "compilerOptions": {
-    /* Path Aliases */
     "paths": {
       "@shared/*": ["../shared/*"],
       "@/*": ["./src/*"]
     },
 
-    /* File Layout */
-    "rootDir": "..", 
     "outDir": "./dist",
+    "rootDir": "..", 
     "rootDirs": ["./src", "../shared"],
 
-    /* Environment Settings */
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "target": "ESNext",
     "lib": ["ESNext"],
     "types": ["node"],
+    
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/types" 
+    ],
 
-    /* Other Outputs */
-    "sourceMap": true,
-    "declaration": true,
-    "declarationMap": true,
+    /* Interop & Style */
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "verbatimModuleSyntax": true,
+    "skipLibCheck": true,
 
     /* Stricter Typechecking Options */
     "strict": true,
     "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
+    "noImplicitOverride": true,
 
-    /* Style & Recommended Options */
-    "jsx": "react-jsx",
-    "verbatimModuleSyntax": true,
-    "isolatedModules": true,
-    "noUncheckedSideEffectImports": true,
-    "moduleDetection": "force",
-    "skipLibCheck": true
+    /* Other Outputs */
+    "sourceMap": true,
+    "declaration": true,
+    "isolatedModules": true
   },
-  
-  "include": ["src/**/*", "../shared/**/*"]
+  "include": [
+    "src/**/*",
+    "../shared/**/*",
+    "src/types/express.d.ts"
+  ],
+  "exclude": ["node_modules", "dist"]
 }

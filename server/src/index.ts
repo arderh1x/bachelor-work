@@ -1,4 +1,4 @@
-import express, { type Application, type Request, type Response } from 'express';
+import express, { type Application, type Request, type Response, type NextFunction } from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
@@ -12,10 +12,20 @@ import ordersRoutes from './routes/ordersRoutes.js';
 const app: Application = express();
 const PORT = envConfig.port;
 
-initDB();
+try {
+    initDB();
+    console.log('Database initialized successfully.');
+} catch (error) {
+    console.error('Failed to initialize database:', error);
+    process.exit(1);
+}
+
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
+app.use(cors({
+    origin: envConfig.frontendUrl || 'http://localhost:5173',
+    credentials: true
+}));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/profiles', profilesRoutes);
@@ -26,6 +36,12 @@ app.get('/api', (req: Request, res: Response) => {
     res.send('RedS7 Server is running');
 });
 
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+    console.error('[Global Error Handler]:', err);
+    res.status(err.status || 500).json({
+        error: err.message || 'Internal Server Error'
+    });
+});
 
 app.listen(PORT, () => {
     console.log(`Server started on http://localhost:${PORT}`);
