@@ -32,8 +32,14 @@ export const createOrder: RequestHandler = async (req, res) => {
         }
 
         const result = OrderModel.create({
-            customer_id, finalProducerId, finalFurnitureId,
-            quantity, finalPrice, phone, delivery_address, comment
+            customer_id,
+            producer_id: finalProducerId,
+            furniture_id: finalFurnitureId,
+            quantity,
+            price_at_order: finalPrice,
+            phone,
+            delivery_address,
+            comment
         });
 
         db.exec("COMMIT");
