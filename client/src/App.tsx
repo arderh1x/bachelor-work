@@ -1,32 +1,59 @@
-import { Routes, Route } from 'react-router-dom';
-import Register from './pages/user/Register';
-import Login from './pages/user/Login';
-import Navbar from './components/Navbar';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import AppLayout from './components/layout/AppLayout';
 import { useAuth } from './hooks/useAuth';
-import ProfilePage from './pages/user/ProfilePage';
-import CHome from './pages/customer/CHome';
-import PHome from './pages/producer/PHome';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import HomePage from './pages/HomePage';
+import ProfilePage from './pages/ProfilePage';
+import InventoryPage from './pages/InventoryPage';
+import OrdersPage from './pages/OrdersPage';
+import ProducerDetailsPage from './pages/ProducerDetailsPage';
+import NotFoundPage from './pages/NotFoundPage';
 
-function App() {
+const App = () => {
   const { user, loading } = useAuth();
 
-  if (loading) return <div style={{ textAlign: 'center', marginTop: '20%' }}>Завантаження...</div>;
+  if (loading) return null;
 
   return (
-    <div className="App">
-      <Navbar />
-
-      <main style={{ padding: '20px' }}>
-        <Routes>
+    <Routes>
+      {/* Публічні маршрути */}
+      {!user ? (
+        <>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/profile" element={<ProfilePage />} />
+        </>
+      ) : (
+        <>
+          <Route path="/login" element={<Navigate to="/" replace />} />
+          <Route path="/register" element={<Navigate to="/" replace />} />
+        </>
+      )}
 
-          <Route path="/*" element={user?.is_producer_mode ? <PHome /> : <CHome />} />
-        </Routes>
-      </main>
-    </div>
+      {/* Захищені маршрути */}
+      <Route element={user ? <AppLayout /> : <Navigate to="/login" replace />}>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/producer/:id" element={<ProducerDetailsPage />} />
+
+        {user?.is_producer_mode && (
+          <>
+            <Route path="/inventory" element={<InventoryPage />} />
+            <Route path="/orders" element={<OrdersPage mode="producer" />} />
+          </>
+        )}
+
+        {!user?.is_producer_mode && (
+          <>
+            <Route path="/orders" element={<OrdersPage mode="customer" />} />
+          </>
+        )}
+
+        <Route path="/404" element={<NotFoundPage />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Route>
+    </Routes>
   );
-}
+};
 
 export default App;

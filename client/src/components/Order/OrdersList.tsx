@@ -1,64 +1,74 @@
 import { useEffect, useState, useCallback } from 'react';
-import { ordersApi } from '@/api/orders';
+import { Box, Typography, CircularProgress, Stack } from '@mui/material';
+import { ordersApi } from '@/api/ordersApi';
 import { type OrderWithDetails, OrderStatus } from '@shared/types';
 import { OrderCard } from './OrderCard';
-import layout from '@/styles/Layout.module.css';
-import styles from './OrdersList.module.css';
+import { useLang } from '@/hooks/useLang';
+import { useToast } from '@/hooks/useToast'; // Твій новий хук
 
-interface OrderListProps {
+interface Props {
     mode: 'customer' | 'producer';
 }
 
-export const OrderList = ({ mode }: OrderListProps) => {
+export const OrdersList = ({ mode }: Props) => {
+    const { t } = useLang();
+    const { showToast } = useToast();
+
     const [orders, setOrders] = useState<OrderWithDetails[]>([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
 
     const fetchOrders = useCallback(async () => {
         setLoading(true);
-        setError(null);
         try {
             const data = await ordersApi.getMyOrders();
             setOrders(data);
         } catch (err) {
-            console.error('Fetch orders error:', err);
-            setError('Не вдалося завантажити замовлення. Спробуйте пізніше.');
+            console.error("Fetching orders failed:", err);
+            showToast(t('errors.fetch_failed'), 'error');
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [t, showToast]);
 
     const handleStatusChange = async (id: number, newStatus: OrderStatus) => {
         try {
             await ordersApi.updateStatus(id, newStatus);
-            fetchOrders();
+            showToast(t('orders.status_updated'), 'success');
+            await fetchOrders();
         } catch (err) {
-            console.error('Update status error:', err);
-            alert('Не вдалося оновити статус замовлення.');
+            console.error("Order update failed:", err);
+            showToast(t('errors.update_failed'), 'error');
         }
     };
 
     useEffect(() => {
-        fetchOrders();
+        let isMounted = true;
+
+        const loadData = async () => {
+            if (isMounted) {
+                await fetchOrders();
+            }
+        };
+
+        loadData();
+
+        return () => {
+            isMounted = false;
+        };
     }, [fetchOrders]);
 
     if (loading) {
-        return <div className={layout.pageContainer}>Завантаження замовлень...</div>;
-    }
-
-    if (error) {
         return (
-            <div className={`${layout.pageContainer} ${styles.error}`}>
-                <p>{error}</p>
-                <button onClick={fetchOrders} className={styles.retryBtn}>Повторити спробу</button>
-            </div>
+            <Box className="loading-centered">
+                <CircularProgress color="primary" />
+            </Box>
         );
     }
 
     return (
-        <div className={styles.listContainer}>
+        <Box className="fade-in">
             {orders.length > 0 ? (
-                <div className={styles.grid}>
+                <Stack spacing={2} className="orders-stack">
                     {orders.map((order) => (
                         <OrderCard
                             key={order.id}
@@ -67,12 +77,15 @@ export const OrderList = ({ mode }: OrderListProps) => {
                             onStatusChange={mode === 'producer' ? handleStatusChange : undefined}
                         />
                     ))}
-                </div>
+                </Stack>
             ) : (
-                <div className={styles.emptyState}>
-                    <p>Замовлень не знайдено.</p>
-                </div>
+                <Box className="empty-state-wrap">
+                    <Typography color="textSecondary" className="empty-text">
+                        {t('orders.empty_list')}
+                    </Typography>
+                </Box>
             )}
-        </div>
+
+        </Box>
     );
 };

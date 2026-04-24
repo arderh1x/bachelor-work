@@ -1,17 +1,20 @@
-import React, { useState } from 'react';
+import { Box, TextField, Button } from '@mui/material';
+import { useState } from 'react';
 import type { CreateOrderDTO } from '@shared/types';
-import styles from './OrderForm.module.css';
+import { useLang } from '@/hooks/useLang';
 
 export type OrderContactData = Pick<CreateOrderDTO, 'quantity' | 'phone' | 'delivery_address' | 'comment'>;
 
-interface OrderFormProps {
+interface Props {
     onSubmit: (data: OrderContactData) => void;
     onCancel: () => void;
-    submitText?: string;
+    submitText: string;
     showQuantity?: boolean;
+    isSubmitting: boolean;
 }
 
-export const OrderForm = ({ onSubmit, onCancel, submitText = "Підтвердити замовлення", showQuantity = true }: OrderFormProps) => {
+export const OrderForm = ({ onSubmit, onCancel, submitText, showQuantity = true, isSubmitting }: Props) => {
+    const { t } = useLang();
     const [formData, setFormData] = useState<OrderContactData>({
         quantity: 1,
         phone: '',
@@ -28,54 +31,68 @@ export const OrderForm = ({ onSubmit, onCancel, submitText = "Підтверди
         setFormData(prev => ({ ...prev, [key]: value }));
 
     return (
-        <form className={styles.orderForm} onSubmit={handleSubmit}>
+        <Box
+            component="form"
+            onSubmit={handleSubmit}
+            className="form-stack form-container-padding"
+        >
             {showQuantity && (
-                <div className={styles.formGroup}>
-                    <label>Кількість:</label>
-                    <input
-                        type="number"
-                        min="1"
-                        value={formData.quantity}
-                        onChange={e => updateField('quantity', Math.max(1, Number(e.target.value)))}
-                        required
-                    />
-                </div>
+                <TextField
+                    type="number"
+                    onChange={e => updateField('quantity', Math.max(1, Number(e.target.value)))}
+                    value={formData.quantity}
+                    fullWidth
+                    label={t('orders.quantity')}
+                    required
+                />
             )}
 
-            <div className={styles.formGroup}>
-                <label>Телефон:</label>
-                <input
-                    type="tel"
-                    placeholder="+380..."
-                    value={formData.phone}
-                    onChange={e => updateField('phone', e.target.value)}
-                    required
-                />
-            </div>
+            <TextField
+                type="tel"
+                onChange={e => updateField('phone', e.target.value)}
+                value={formData.phone}
+                fullWidth
+                label={t('orders.phone')}
+                placeholder="+380..."
+                required
+            />
 
-            <div className={styles.formGroup}>
-                <label>Адреса доставки:</label>
-                <input
-                    type="text"
-                    placeholder="Місто, відділення або вулиця"
-                    value={formData.delivery_address}
-                    onChange={e => updateField('delivery_address', e.target.value)}
-                    required
-                />
-            </div>
+            <TextField
+                fullWidth
+                label={t('orders.delivery_address')}
+                placeholder={t('orders.address_placeholder')}
+                value={formData.delivery_address}
+                onChange={e => updateField('delivery_address', e.target.value)}
+                required
+            />
 
-            <div className={styles.formGroup}>
-                <label>Коментар:</label>
-                <textarea
-                    value={formData.comment || ''}
-                    onChange={e => updateField('comment', e.target.value)}
-                />
-            </div>
+            <TextField
+                fullWidth
+                multiline
+                rows={2}
+                label={t('orders.comment')}
+                value={formData.comment || ''}
+                onChange={e => updateField('comment', e.target.value)}
+            />
 
-            <div className={styles.actions}>
-                <button type="submit" className={styles.submitBtn}>{submitText}</button>
-                <button type="button" onClick={onCancel} className={styles.cancelBtn}>Скасувати</button>
-            </div>
-        </form>
+            <Box className="actions-group">
+                <Button
+                    variant="outlined"
+                    onClick={onCancel}
+                    className="btn-base"
+                    disabled={isSubmitting}
+                >
+                    {t('common.cancel')}
+                </Button>
+                <Button
+                    variant="contained"
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="btn-base"
+                >
+                    {isSubmitting ? t('common.loading') : submitText}
+                </Button>
+            </Box>
+        </Box>
     );
 };

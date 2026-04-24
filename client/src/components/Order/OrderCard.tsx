@@ -1,13 +1,15 @@
+import { Box, Typography, Paper, Chip, Button, Divider, Stack, type ChipProps } from '@mui/material';
 import { type OrderWithDetails, OrderStatus } from '@shared/types';
-import styles from './OrderCard.module.css';
+import { useLang } from '@/hooks/useLang';
 
-interface OrderCardProps {
+interface Props {
     order: OrderWithDetails;
     mode: 'customer' | 'producer';
     onStatusChange?: (id: number, newStatus: OrderStatus) => void;
 }
 
-export const OrderCard = ({ order, mode, onStatusChange }: OrderCardProps) => {
+export const OrderCard = ({ order, mode, onStatusChange }: Props) => {
+    const { t } = useLang();
     const isProducer = mode === 'producer';
 
     const date = new Date(order.created_at).toLocaleDateString('uk-UA', {
@@ -18,99 +20,92 @@ export const OrderCard = ({ order, mode, onStatusChange }: OrderCardProps) => {
         minute: '2-digit'
     });
 
+    const getStatusColor = (status: OrderStatus): ChipProps['color'] => {
+        switch (status) {
+            case OrderStatus.PENDING: return 'warning';
+            case OrderStatus.ACCEPTED: return 'info';
+            case OrderStatus.IN_PROGRESS: return 'primary';
+            case OrderStatus.SHIPPED: return 'secondary';
+            case OrderStatus.COMPLETED: return 'success';
+            case OrderStatus.CANCELLED: return 'error';
+            default: return 'default';
+        }
+    };
+
     return (
-        <div className={`${styles.card} ${styles[order.status.toLowerCase().replace('-', '')]}`}>
-            <div className={styles.header}>
-                <span className={styles.orderId}>Замовлення №{order.id}</span>
-                <span className={styles.date}>{date}</span>
-            </div>
+        <Paper className="order-card app-card">
+            <Box className="order-header">
+                <Typography variant="subtitle2" color="textSecondary">
+                    №{order.id} — {date}
+                </Typography>
+                <Chip
+                    label={t(`status.${order.status.toLowerCase()}`)}
+                    color={getStatusColor(order.status)}
+                    size="small"
+                    className="btn-base"
+                />
+            </Box>
 
-            <div className={styles.body}>
-                <h3 className={styles.furnitureName}>
-                    {order.furniture?.name || 'Індивідуальний проєкт'}
-                </h3>
+            <Typography variant="h6" className="card-title">
+                {order.furniture?.name || t('orders.custom_project')}
+            </Typography>
 
-                <div className={styles.details}>
-                    <p><strong>Ціна за одиницю:</strong> {order.price_at_order} грн</p>
-                    <p><strong>Кількість:</strong> {order.quantity} шт.</p>
-                    <p className={styles.totalPrice}><strong>Сума:</strong> {order.total_price} грн</p>
-                    <p><strong>Адреса доставки:</strong> {order.delivery_address}</p>
-                    {order.comment && <p className={styles.comment}>💬 {order.comment}</p>}
-                </div>
+            <Stack spacing={1} className="order-details-stack">
+                <Typography variant="body2">
+                    <strong>{t('inventory.price')}:</strong> {order.price_at_order} {t('common.currency')} x {order.quantity}
+                </Typography>
+                <Typography variant="body2">
+                    <strong>{t('orders.phone')}:</strong> {order.phone}
+                </Typography>
+                <Typography variant="body2">
+                    <strong>{t('orders.delivery_address')}:</strong> {order.delivery_address}
+                </Typography>
 
-                <hr className={styles.divider} />
+                {order.comment && (
+                    <Typography variant="body2" className="order-comment">
+                        "{order.comment}"
+                    </Typography>
+                )}
+            </Stack>
 
-                <div className={styles.contactInfo}>
-                    {isProducer ? (
-                        <>
-                            <p><strong>Клієнт:</strong> {order.customer?.username || 'Гість'}</p>
-                            <p><strong>Телефон:</strong> <a href={`tel:${order.phone}`}>{order.phone}</a></p>
-                        </>
-                    ) : (
-                        <>
-                            <p><strong>Майстерня:</strong> {order.producer?.workshop_name || order.producer?.username}</p>
-                        </>
-                    )}
-                    <p><strong>Статус:</strong> <span className={styles.statusText}>{order.status}</span></p>
-                </div>
-            </div>
+            {isProducer && onStatusChange && (
+                <>
+                    <Divider />
+                    <Box className="order-actions">
+                        {order.status === OrderStatus.PENDING && (
+                            <Button size="small" variant="contained" color="info" className="btn-base"
+                                onClick={() => onStatusChange(order.id, OrderStatus.ACCEPTED)}>
+                                {t('orders.action.accept')}
+                            </Button>
+                        )}
+                        {order.status === OrderStatus.ACCEPTED && (
+                            <Button size="small" variant="contained" color="primary" className="btn-base"
+                                onClick={() => onStatusChange(order.id, OrderStatus.IN_PROGRESS)}>
+                                {t('orders.action.start')}
+                            </Button>
+                        )}
+                        {order.status === OrderStatus.IN_PROGRESS && (
+                            <Button size="small" variant="contained" color="secondary" className="btn-base"
+                                onClick={() => onStatusChange(order.id, OrderStatus.SHIPPED)}>
+                                {t('orders.action.ship')}
+                            </Button>
+                        )}
+                        {order.status === OrderStatus.SHIPPED && (
+                            <Button size="small" variant="contained" color="success" className="btn-base"
+                                onClick={() => onStatusChange(order.id, OrderStatus.COMPLETED)}>
+                                {t('orders.action.complete')}
+                            </Button>
+                        )}
 
-            {isProducer && (
-                <div className={styles.actions}>
-                    {order.status === OrderStatus.PENDING && (
-                        <>
-                            <button
-                                className={styles.acceptBtn}
-                                onClick={() => onStatusChange?.(order.id, OrderStatus.ACCEPTED)}
-                            >
-                                Прийняти
-                            </button>
-                            <button
-                                className={styles.rejectBtn}
-                                onClick={() => onStatusChange?.(order.id, OrderStatus.REJECTED)}
-                            >
-                                Відхилити
-                            </button>
-                        </>
-                    )}
-
-                    {order.status === OrderStatus.ACCEPTED && (
-                        <button
-                            className={styles.progressBtn}
-                            onClick={() => onStatusChange?.(order.id, OrderStatus.IN_PROGRESS)}
-                        >
-                            Почати виготовлення
-                        </button>
-                    )}
-
-                    {order.status === OrderStatus.IN_PROGRESS && (
-                        <button
-                            className={styles.shippedBtn}
-                            onClick={() => onStatusChange?.(order.id, OrderStatus.SHIPPED)}
-                        >
-                            Відправлено клієнту
-                        </button>
-                    )}
-
-                    {order.status === OrderStatus.SHIPPED && (
-                        <button
-                            className={styles.completeBtn}
-                            onClick={() => onStatusChange?.(order.id, OrderStatus.COMPLETED)}
-                        >
-                            Завершити замовлення
-                        </button>
-                    )}
-
-                    {[OrderStatus.ACCEPTED, OrderStatus.IN_PROGRESS, OrderStatus.SHIPPED].includes(order.status) && (
-                        <button
-                            className={styles.cancelBtn}
-                            onClick={() => onStatusChange?.(order.id, OrderStatus.CANCELLED)}
-                        >
-                            Скасувати
-                        </button>
-                    )}
-                </div>
+                        {![OrderStatus.COMPLETED, OrderStatus.CANCELLED].includes(order.status) && (
+                            <Button size="small" variant="outlined" color="error" className="btn-base"
+                                onClick={() => onStatusChange(order.id, OrderStatus.CANCELLED)}>
+                                {t('common.cancel')}
+                            </Button>
+                        )}
+                    </Box>
+                </>
             )}
-        </div>
+        </Paper>
     );
 };
