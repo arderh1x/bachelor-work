@@ -1,0 +1,364 @@
+/* ==========================================================================
+   COMPONENTS — Навбар, Сайдбар, Картки, Форми, Діалоги
+   ========================================================================== */
+
+
+/* ==========================================================================
+   1. NAVBAR
+   ========================================================================== */
+.navbar-appbar {
+    z-index: 1300 !important;
+    transition:
+        background-color var(--transition-std),
+        color var(--transition-std) !important;
+}
+
+.navbar-customer {
+    background-color: var(--nav-bg-customer) !important;
+    color: var(--nav-text-customer) !important;
+    border-bottom: 1px solid var(--nav-border-customer) !important;
+    box-shadow: none !important;
+}
+
+.navbar-producer {
+    background-color: var(--nav-bg-producer) !important;
+    color: var(--nav-text-producer) !important;
+    box-shadow: none !important;
+}
+
+/* Логотип — єдиний градієнт для обох режимів, керується через --nav-logo-gradient */
+.nav-logo {
+    font-weight: 800 !important;
+    cursor: pointer;
+    background: var(--nav-logo-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-right: 24px !important;
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.nav-btn-text {
+    text-transform: none !important;
+    font-weight: 500 !important;
+}
+
+/* Перемикач режиму Customer / Producer */
+.mode-toggle-btn {
+    border-radius: 20px !important;
+    font-weight: 700 !important;
+    text-transform: none !important;
+    padding: 4px 16px !important;
+}
+
+.mode-toggle-producer {
+    background-color: var(--nav-btn-producer-bg) !important;
+    color: var(--nav-btn-producer-text) !important;
+}
+
+.mode-toggle-customer {
+    border: 2px solid var(--nav-btn-customer-border) !important;
+    color: var(--nav-btn-customer-text) !important;
+    background-color: transparent !important;
+}
+
+
+/* ==========================================================================
+   2. SIDEBAR
+   ========================================================================== */
+.sidebar-nav {
+    width: var(--sidebar-width);
+    flex-shrink: 0;
+}
+
+.sidebar-paper {
+    width: var(--sidebar-width) !important;
+    z-index: 1200 !important;
+    box-sizing: border-box;
+    border-right: 1px solid var(--border-color) !important;
+    background-color: var(--bg-surface) !important;
+    color: var(--text-main) !important;
+    transition: background-color var(--transition-std) !important;
+}
+
+.sidebar-header {
+    padding: 20px;
+    text-align: center;
+}
+
+.sidebar-header .brand-text {
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--text-main);
+}
+
+.sidebar-list {
+    padding: 16px 8px !important;
+}
+
+.sidebar-item-btn {
+    border-radius: var(--radius-md) !important;
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+    margin-bottom: 4px !important;
+    color: var(--text-secondary) !important;
+    transition: background-color var(--transition-fast), color var(--transition-fast) !important;
+}
+
+.sidebar-item-btn:hover {
+    background-color: var(--primary-amber-light) !important;
+    color: var(--primary-amber) !important;
+}
+
+.sidebar-item-icon {
+    min-width: 40px !important;
+    color: inherit !important;
+}
+
+.sidebar-item-text {
+    font-size: 0.95rem !important;
+}
+
+/* Активний пункт меню */
+.sidebar-active-item {
+    background-color: var(--primary-amber-light) !important;
+    color: var(--primary-amber) !important;
+}
+
+.sidebar-item-active .sidebar-item-text {
+    font-weight: 700 !important;
+}
+
+/* Мобільний / десктопний сайдбар */
+.sidebar-mobile {
+    display: none;
+}
+
+.sidebar-desktop {
+    display: block;
+}
+
+@media (max-width: 900px) {
+    .sidebar-mobile {
+        display: block;
+    }
+
+    .sidebar-desktop {
+        display: none;
+    }
+
+    .sidebar-nav {
+        width: 0;
+    }
+}
+
+
+/* ==========================================================================
+   3. UNIVERSAL CARDS
+   ========================================================================== */
+.app-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--radius-lg) !important;
+    transition:
+        transform var(--transition-std),
+        box-shadow var(--transition-std) !important;
+    overflow: hidden;
+    background: var(--bg-surface) !important;
+    color: var(--text-main) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+.app-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md) !important;
+}
+
+.card-title {
+    font-weight: 700 !important;
+    margin-bottom: 8px !important;
+}
+
+/* Furniture card */
+.furn-img-wrap {
+    height: 200px;
+    position: relative;
+    overflow: hidden;
+    background-color: var(--bg-light);
+}
+
+.furn-content {
+    flex-grow: 1;
+    padding: 20px !important;
+}
+
+.furn-actions {
+    padding: 16px !important;
+    padding-top: 0 !important;
+    gap: 8px;
+}
+
+.furn-type-tag {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    backdrop-filter: blur(4px);
+    background-color: rgba(0, 0, 0, 0.6) !important;
+    color: #ffffff !important;
+}
+
+/* Order card */
+.order-card {
+    padding: 24px !important;
+    margin-bottom: 16px !important;
+    position: relative;
+    border-radius: var(--radius-lg) !important;
+    background-color: var(--bg-surface) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.order-details-stack {
+    margin-bottom: 16px;
+}
+
+.order-comment {
+    font-style: italic;
+    color: var(--text-secondary);
+    padding: 8px 12px;
+    background-color: rgba(0, 0, 0, 0.04);
+    border-radius: var(--radius-sm);
+    margin-top: 8px;
+}
+
+body.dark .order-comment {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.order-actions {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+/* Producer card */
+.producer-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.producer-card-header {
+    height: 100px;
+    width: 100%;
+    background: linear-gradient(135deg, var(--graphite-bg) 0%, #444444 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    margin-bottom: 40px;
+}
+
+.producer-avatar-wrap {
+    width: 80px !important;
+    height: 80px !important;
+    border: 4px solid var(--bg-surface) !important;
+    box-shadow: var(--shadow-sm);
+    position: absolute;
+    bottom: -40px;
+    background-color: var(--bg-surface) !important;
+    color: var(--graphite-bg) !important;
+}
+
+.producer-info {
+    padding: 16px 20px 20px !important;
+    width: 100%;
+}
+
+.producer-bio {
+    height: 40px;
+    margin-bottom: 16px !important;
+    color: var(--text-secondary);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+
+/* ==========================================================================
+   4. BUTTONS
+   ========================================================================== */
+.btn-base {
+    border-radius: var(--radius-md) !important;
+    text-transform: none !important;
+    font-weight: 600 !important;
+}
+
+
+/* ==========================================================================
+   5. FORMS, DIALOGS, MODALS
+   ========================================================================== */
+.form-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-row {
+    display: flex;
+    gap: 16px;
+}
+
+.form-container-padding {
+    padding: 16px 0;
+}
+
+.form-section-title {
+    font-weight: 700 !important;
+    margin-bottom: 24px !important;
+}
+
+.dialog-header-title {
+    font-weight: 700 !important;
+    padding: 20px 24px !important;
+    color: var(--text-main);
+}
+
+.dialog-body-padding {
+    padding: 16px 24px 24px !important;
+}
+
+.info-box-padding {
+    padding: 12px 16px;
+    background-color: var(--primary-amber-light);
+    border-radius: var(--radius-md);
+    margin-bottom: 20px;
+}
+
+.price-text-secondary {
+    color: var(--primary-amber);
+    font-weight: 700 !important;
+}
+
+@media (max-width: 600px) {
+    .form-row {
+        flex-direction: column;
+    }
+}

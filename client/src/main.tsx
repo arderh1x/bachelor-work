@@ -5,7 +5,13 @@ import { CssBaseline } from '@mui/material';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeModeProvider } from './context/ThemeModeContext';
 import App from './App';
+
+import '@/styles/tokens.css';
 import '@/styles/global.css';
+import '@/styles/layout.css';
+import '@/styles/components.css';
+import '@/styles/pages.css';
+
 import { LangProvider } from './context/LangContext';
 import { ToastProvider } from './context/ToastContext';
 

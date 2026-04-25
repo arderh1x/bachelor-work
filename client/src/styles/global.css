@@ -1,82 +1,37 @@
+/* ==========================================================================
+   GLOBAL — скидання, body, скроллбар, анімації
+   ========================================================================== */
+
 :root {
-    /* Акценти (незмінні) */
-    --primary-amber: #ffb300;
-    --primary-amber-dark: #ffa000;
-    --primary-amber-light: rgba(255, 179, 0, 0.1);
-    --graphite-bg: #121212;
-
-    /* Кольори теми (Світла за замовчуванням) */
     --bg-light: #f8f9fa;
-    --bg-surface: #ffffff;
     --text-main: #2c3e50;
-    --text-secondary: #64748b;
-    --text-muted: #94a3b8;
-    --border-color: rgba(0, 0, 0, 0.08);
-
-    --nav-bg-customer: #ffffff;
-    --nav-text-customer: var(--text-main);
-    --nav-bg-producer: var(--graphite-bg);
-    --nav-text-producer: #ffffff;
-
-    /* Параметри */
-    --transition-std: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 12px 24px rgba(0, 0, 0, 0.08);
-    --radius-md: 12px;
-    --radius-lg: 16px;
-    --sidebar-width: 260px;
 }
 
-/* Темна тема */
 body.dark {
-    --bg-light: #0f172a;
-    --bg-surface: #1e293b;
-    --text-main: #f1f5f9;
-    --text-secondary: #94a3b8;
-    --border-color: rgba(255, 255, 255, 0.1);
-    --shadow-md: 0 12px 24px rgba(0, 0, 0, 0.4);
-
-    --nav-bg-customer: var(--bg-surface);
-    --nav-text-customer: var(--text-main);
-    --nav-bg-producer: #000000;
-    --nav-text-producer: #ffffff;
+    color-scheme: dark;
 }
 
-* {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
 body {
-    font-family: 'Inter', -apple-system, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     background-color: var(--bg-light);
     color: var(--text-main);
-    transition: background-color var(--transition-std), color var(--transition-std);
+    transition:
+        background-color var(--transition-std),
+        color var(--transition-std);
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-/* Глобальні налаштування для main-content */
-.main-content {
-    flex-grow: 1;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    transition: margin var(--transition-std), width var(--transition-std);
-}
-
-@media (min-width: 901px) {
-    .main-content {
-        margin-left: var(--sidebar-width);
-        width: calc(100% - var(--sidebar-width));
-    }
-}
-
-.fade-in {
-    animation: fadeIn 0.4s ease-out;
-}
-
+/* --- Анімації --- */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -89,6 +44,11 @@ body {
     }
 }
 
+.fade-in {
+    animation: fadeIn 0.4s ease-out both;
+}
+
+/* --- Скроллбар (Webkit) --- */
 ::-webkit-scrollbar {
     width: 8px;
 }
@@ -100,4 +60,9 @@ body {
 ::-webkit-scrollbar-thumb {
     background: var(--text-muted);
     border-radius: 10px;
+    transition: background var(--transition-fast);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
 }

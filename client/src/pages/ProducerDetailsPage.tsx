@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Box, CircularProgress } from '@mui/material';
+import { Box, CircularProgress, Typography } from '@mui/material';
 import { furnitureApi } from '@/api/furnitureApi';
 import { profilesApi } from '@/api/profilesApi';
 import { useLang } from '@/hooks/useLang';
-import { useToast } from '@/hooks/useToast'; // Новий хук
+import { useToast } from '@/hooks/useToast';
+import { useAuth } from '@/hooks/useAuth'; // Додаємо авторизацію
 import type { Furniture, Producer } from '@shared/types';
 import ProducerDetails from '../components/producer/ProducerDetails';
 
@@ -12,10 +13,13 @@ export default function ProducerDetailsPage() {
     const { id } = useParams<{ id: string }>();
     const { t } = useLang();
     const { showToast } = useToast();
+    const { user } = useAuth(); // Отримуємо поточного користувача
 
     const [producer, setProducer] = useState<Producer | null>(null);
     const [items, setItems] = useState<Furniture[]>([]);
     const [loading, setLoading] = useState(true);
+
+    const isOwner = user?.id === Number(id);
 
     useEffect(() => {
         if (!id) return;
@@ -35,7 +39,7 @@ export default function ProducerDetailsPage() {
                     setItems(furnitureData);
                 }
             } catch (err) {
-                console.error("Producer data loading error:", err)
+                console.error("Producer data loading error:", err);
                 if (isMounted) {
                     showToast(t('errors.fetch_producers'), 'error');
                 }
@@ -47,10 +51,7 @@ export default function ProducerDetailsPage() {
         };
 
         loadData();
-
-        return () => {
-            isMounted = false;
-        };
+        return () => { isMounted = false; };
     }, [id, t, showToast]);
 
     if (loading) {
@@ -68,10 +69,11 @@ export default function ProducerDetailsPage() {
                     producer={producer}
                     items={items}
                     loading={loading}
+                    isOwner={isOwner}
                 />
             ) : (
                 <Box className="empty-state-wrap">
-                    {/* Тут можна додати Typography з повідомленням, що виробника не знайдено */}
+                    <Typography color="textSecondary">{t('errors.profile_not_found')}</Typography>
                 </Box>
             )}
         </Box>

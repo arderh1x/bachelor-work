@@ -18,7 +18,6 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
     const navigate = useNavigate();
 
     const theme = useTheme();
-    // Визначаємо "вузькі" екрани (планшети та мобільні)
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -30,7 +29,7 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
             showToast(t('auth.mode_switched_success'), 'success');
             navigate('/');
         } catch (error) {
-            console.error("Failed to toggle mode:", error);
+            console.error('Failed to toggle mode:', error);
             showToast(t('auth.mode_switched_error'), 'error');
         }
     };
@@ -40,12 +39,8 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
             position="fixed"
             elevation={0}
             className={`navbar-appbar ${isProducer ? 'navbar-producer' : 'navbar-customer'}`}
-            sx={{
-                zIndex: (theme) => theme.zIndex.drawer + 1,
-                bgcolor: isProducer ? 'var(--graphite-bg)' : 'var(--bg-white)',
-                color: isProducer ? '#fff' : 'var(--text-main)',
-                borderBottom: '1px solid var(--border-color)'
-            }}
+            sx={{ zIndex: (t) => t.zIndex.drawer + 1 }}
+
         >
             <Toolbar className="flex-between">
                 <Stack direction="row" alignItems="center">
@@ -63,16 +58,20 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
                         className="nav-logo"
                         sx={{
                             cursor: 'pointer',
-                            fontSize: isMobile ? '1.1rem' : '1.25rem' // Трохи менше на мобільних
+                            fontSize: isMobile ? '1.1rem' : '1.25rem',
+                            color: 'transparent !important',
                         }}
                     >
                         {t('brand')}
                     </Typography>
 
-                    {/* На планшетах Home можна залишити, якщо мало пунктів, або сховати */}
                     {!isSmallScreen && (
                         <Stack direction="row" sx={{ ml: 2 }}>
-                            <Button onClick={() => navigate('/')} color="inherit" sx={{ textTransform: 'none' }}>
+                            <Button
+                                onClick={() => navigate('/')}
+                                color="inherit"
+                                className="nav-btn-text"
+                            >
                                 {t('nav.home')}
                             </Button>
                         </Stack>
@@ -81,17 +80,16 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
 
                 <Stack direction="row" spacing={isSmallScreen ? 0.5 : 1} alignItems="center">
                     {user && (
-                        <Tooltip title={isSmallScreen ? t('nav.mode_toggle') : ""}>
+                        <Tooltip title={isSmallScreen ? t('nav.mode_toggle') : ''}>
                             <Button
                                 onClick={handleToggleMode}
-                                variant={isProducer ? "contained" : "outlined"}
-                                // На маленьких екранах залишаємо тільки іконку для економії місця
+                                variant={isProducer ? 'contained' : 'outlined'}
                                 startIcon={<Repeat size={18} />}
                                 className={`mode-toggle-btn ${isProducer ? 'mode-toggle-producer' : 'mode-toggle-customer'}`}
                                 sx={{
                                     minWidth: isSmallScreen ? '40px' : 'auto',
                                     px: isSmallScreen ? 1 : 2,
-                                    ".MuiButton-startIcon": { margin: isSmallScreen ? 0 : '' }
+                                    '.MuiButton-startIcon': { margin: isSmallScreen ? 0 : '' },
                                 }}
                             >
                                 {!isSmallScreen && (isProducer ? t('nav.mode_producer') : t('nav.mode_customer'))}
@@ -99,7 +97,6 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
                         </Tooltip>
                     )}
 
-                    {/* Мова та тема (можна сховати лише на самих маленьких телефонах) */}
                     {!isMobile && (
                         <>
                             <IconButton onClick={toggleLang} color="inherit">
@@ -123,16 +120,11 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
                                     maxWidth: isSmallScreen ? '120px' : '200px',
                                     overflow: 'hidden',
                                     whiteSpace: 'nowrap',
-                                    display: 'flex'
                                 }}
                             >
                                 <Typography
                                     variant="body2"
-                                    sx={{
-                                        display: 'block',
-                                        textOverflow: 'ellipsis',
-                                        overflow: 'hidden'
-                                    }}
+                                    sx={{ display: 'block', textOverflow: 'ellipsis', overflow: 'hidden' }}
                                 >
                                     {user.username}
                                 </Typography>
@@ -142,7 +134,12 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
                             </IconButton>
                         </Stack>
                     ) : (
-                        <Button onClick={() => navigate('/login')} variant="contained" color="primary" className="btn-base">
+                        <Button
+                            onClick={() => navigate('/login')}
+                            variant="contained"
+                            color="primary"
+                            className="btn-base"
+                        >
                             {t('nav.login')}
                         </Button>
                     )}

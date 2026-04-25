@@ -125,6 +125,34 @@ export default {
         have_account: "Already have an account?",
         mode_switched_success: "Mode switched successfully!",
     },
+    faq: {
+        title: "Frequently Asked Questions",
+        questions: {
+            how_it_works: {
+                question: "How does the furniture ordering work?",
+                answer: [
+                    "You choose a craftsman in our catalog or browse ready-made items in their workshop.",
+                    "You can send an individual request for the manufacture of a unique item.",
+                    "After clarifying the details, the master gets to work, and you receive order status updates."
+                ]
+            },
+            payment: {
+                question: "What payment methods are available?",
+                answer: [
+                    "Payment is usually made in installments: a deposit for the purchase of materials and the final payment upon receipt.",
+                    "Each master indicates their payment methods (card, cash, or bank transfer) in their profile."
+                ]
+            },
+            delivery: {
+                question: "How is delivery carried out?",
+                answer: [
+                    "Delivery is discussed individually with each master.",
+                    "Pickup from the workshop or delivery via popular postal services throughout Ukraine is possible."
+                ]
+            }
+        }
+    },
+
     errors: {
         fetch_producers: "Failed to load the list of masters",
         fetch_profile: "Failed to load profile data",

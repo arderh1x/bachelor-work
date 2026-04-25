@@ -60,10 +60,13 @@ export const FurnitureCard = ({ item, mode, onDelete, onEdit, onOrder }: Furnitu
                         </Button>
                     </>
                 ) : (
-                    <Button onClick={() => onOrder?.(item)} variant="contained" fullWidth
-                        startIcon={<ShoppingCart size={18} />} className="btn-base">
-                        {t('common.buy')}
-                    </Button>
+
+                    onOrder && (
+                        <Button onClick={() => onOrder(item)} variant="contained" fullWidth
+                            startIcon={<ShoppingCart size={18} />} className="btn-base">
+                            {t('common.buy')}
+                        </Button>
+                    )
                 )}
             </CardActions>
         </Card>

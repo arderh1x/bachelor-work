@@ -1,0 +1,26 @@
+/* ==========================================================================
+   DESIGN TOKENS — статичні значення, що не залежать від теми
+   Імпортується першим у main.tsx або index.css
+   ========================================================================== */
+
+:root {
+    /* --- Акценти (не змінюються в темній темі) --- */
+    --primary-amber: #ffb300;
+    --primary-amber-dark: #ffa000;
+    --primary-amber-light: rgba(255, 179, 0, 0.12);
+    --graphite-bg: #121212;
+
+    /* --- Геометрія --- */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+
+    /* --- Анімації --- */
+    --transition-std: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* --- Розміри лейауту --- */
+    --sidebar-width: 260px;
+    --navbar-height: 64px;
+}

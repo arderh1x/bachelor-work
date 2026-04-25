@@ -9,6 +9,7 @@ import InventoryPage from './pages/InventoryPage';
 import OrdersPage from './pages/OrdersPage';
 import ProducerDetailsPage from './pages/ProducerDetailsPage';
 import NotFoundPage from './pages/NotFoundPage';
+import FAQPage from './pages/FAQPage';
 
 const App = () => {
   const { user, loading } = useAuth();
@@ -35,6 +36,7 @@ const App = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/producer/:id" element={<ProducerDetailsPage />} />
+        <Route path="/faq" element={<FAQPage />} />
 
         {user?.is_producer_mode && (
           <>

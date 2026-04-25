@@ -112,7 +112,6 @@ export const OrderModal = ({ open, onClose, producerId, furnitureItem, onSuccess
                     <OrderForm
                         onSubmit={handleFinalSubmit}
                         onCancel={() => furnitureItem ? handleClose() : setActiveStep(0)}
-                        showQuantity={!!furnitureItem}
                         isSubmitting={isSubmitting}
                         submitText={t('orders.confirm')}
                     />
