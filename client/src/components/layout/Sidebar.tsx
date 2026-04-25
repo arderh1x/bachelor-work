@@ -29,49 +29,57 @@ const Sidebar = ({ mobileOpen, onClose }: SidebarProps) => {
     ];
 
     const drawerContent = (
-        <Box sx={{ height: '100%', bgcolor: 'var(--bg-surface)', color: 'var(--text-main)' }}>
-            <Toolbar /> {/* Тільки для десктопа, щоб почати під навбаром */}
-            <List sx={{ px: 1.5, mt: { xs: 2, md: 0 } }}>
-                {menuItems.filter(item => item.visible).map((item) => (
-                    <ListItem key={item.path} disablePadding>
-                        <ListItemButton
-                            onClick={() => { navigate(item.path); onClose(); }}
-                            selected={location.pathname === item.path}
-                            sx={{ borderRadius: '12px', mb: 0.5 }}
-                        >
-                            <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}>{item.icon}</ListItemIcon>
-                            <ListItemText primary={item.text} />
-                        </ListItemButton>
-                    </ListItem>
-                ))}
+        <Box sx={{ height: '100%', overflowY: 'auto', overflowX: 'hidden' }}>
+            <Toolbar />
 
-                {/* ДОДАТКОВІ КНОПКИ ДЛЯ ПЛАНШЕТІВ */}
+            <List className="sidebar-list" sx={{ mt: { xs: 2, md: 0 } }}>
+                {menuItems.filter(item => item.visible).map((item) => {
+                    const isActive = location.pathname === item.path;
+                    return (
+                        <ListItem key={item.path} disablePadding>
+                            <ListItemButton onClick={() => { navigate(item.path); onClose(); }} disableRipple={false}
+                                className={`sidebar-item-btn ${isActive ? 'sidebar-active-item' : ''}`}>
+                                <ListItemIcon className="sidebar-item-icon">
+                                    {item.icon}
+                                </ListItemIcon>
+
+                                <ListItemText primary={item.text} className="sidebar-item-text" />
+                            </ListItemButton>
+                        </ListItem>
+                    );
+                })}
+
                 {isTablet && (
                     <>
-
-                        <Divider sx={{ my: 2, opacity: 0.1 }} />
-                        <Typography variant="caption" sx={{ px: 2, opacity: 0.5, textTransform: 'uppercase' }}>
+                        <Divider className="divider-std" />
+                        <Typography variant="caption" className="sidebar-section-title">
                             {t('sidebar.settings')}
                         </Typography>
 
                         <ListItem disablePadding>
-                            <ListItemButton onClick={toggleProducerMode} sx={{ borderRadius: '12px' }}>
-                                <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}><Repeat size={20} /></ListItemIcon>
-                                <ListItemText primary={t('nav.mode_toggle')} />
+                            <ListItemButton onClick={toggleProducerMode} className="sidebar-item-btn">
+                                <ListItemIcon className="sidebar-item-icon"><Repeat size={20} /></ListItemIcon>
+
+                                <ListItemText primary={t('nav.mode_toggle')} className="sidebar-item-text" />
                             </ListItemButton>
                         </ListItem>
+
                         <ListItem disablePadding>
-                            <ListItemButton onClick={toggleLang} sx={{ borderRadius: '12px' }}>
-                                <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}><Languages size={20} /></ListItemIcon>
-                                <ListItemText primary={t('nav.toggle_lang')} />
+                            <ListItemButton onClick={toggleLang} className="sidebar-item-btn">
+                                <ListItemIcon className="sidebar-item-icon"><Languages size={20} /></ListItemIcon>
+
+                                <ListItemText primary={t('nav.toggle_lang')} className="sidebar-item-text" />
                             </ListItemButton>
                         </ListItem>
+
                         <ListItem disablePadding>
-                            <ListItemButton onClick={toggleTheme} sx={{ borderRadius: '12px' }}>
-                                <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}>
+                            <ListItemButton onClick={toggleTheme} className="sidebar-item-btn">
+                                <ListItemIcon className="sidebar-item-icon">
                                     {mode === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
                                 </ListItemIcon>
-                                <ListItemText primary={mode === 'dark' ? t('theme.light') : t('theme.dark')} />
+
+                                <ListItemText primary={mode === 'dark' ? t('theme.light') : t('theme.dark')}
+                                    className="sidebar-item-text" />
                             </ListItemButton>
                         </ListItem>
                     </>
@@ -82,18 +90,22 @@ const Sidebar = ({ mobileOpen, onClose }: SidebarProps) => {
 
     return (
         <Box component="nav">
+            {/* Мобильный временный Drawer */}
             <Drawer
                 variant="temporary"
                 open={mobileOpen}
                 onClose={onClose}
-                PaperProps={{ sx: { width: 260, border: 'none' } }}
+                ModalProps={{ keepMounted: true }} // Лучше для производительности на мобильном
+                classes={{ paper: 'sidebar-paper' }}
                 sx={{ display: { xs: 'block', md: 'none' } }}
             >
                 {drawerContent}
             </Drawer>
+
+            {/* Десктопный постоянный Drawer */}
             <Drawer
                 variant="permanent"
-                PaperProps={{ sx: { width: 260, borderRight: '1px solid var(--border-color)' } }}
+                classes={{ paper: 'sidebar-paper' }}
                 sx={{ display: { xs: 'none', md: 'block' } }}
             >
                 {drawerContent}

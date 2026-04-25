@@ -1,0 +1,71 @@
+.navbar-appbar {
+    z-index: 1300 !important;
+    transition:
+        background-color var(--transition-std),
+        color var(--transition-std) !important;
+}
+
+.navbar-customer {
+    background-color: var(--nav-bg-customer) !important;
+    color: var(--nav-text-customer) !important;
+    border-bottom: 1px solid var(--nav-border-customer) !important;
+    box-shadow: none !important;
+}
+
+.navbar-producer {
+    background-color: var(--nav-bg-producer) !important;
+    color: var(--nav-text-producer) !important;
+    box-shadow: none !important;
+}
+
+.nav-logo {
+    font-weight: 800 !important;
+    cursor: pointer;
+    background: var(--nav-logo-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-right: 24px !important;
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.nav-btn-text {
+    text-transform: none !important;
+    font-weight: 500 !important;
+}
+
+.mode-toggle-btn {
+    border-radius: 20px !important;
+    font-weight: 700 !important;
+    text-transform: none !important;
+    padding: 4px 16px !important;
+}
+
+.mode-toggle-producer {
+    background-color: var(--nav-btn-producer-bg) !important;
+    color: var(--nav-btn-producer-text) !important;
+}
+
+.mode-toggle-customer {
+    border: 2px solid var(--nav-btn-customer-border) !important;
+    color: var(--nav-btn-customer-text) !important;
+    background-color: transparent !important;
+}
+
+
+.nav-profile-btn {
+    text-transform: none !important;
+    font-weight: 600 !important;
+    white-space: nowrap;
+}
+
+.nav-user-name {
+    display: block;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}

@@ -11,22 +11,21 @@ interface FurnitureCardProps {
     onOrder?: (item: Furniture) => void;
 }
 
-export const FurnitureCard = ({ item, mode, onDelete, onEdit, onOrder }: FurnitureCardProps) => {
+function FurnitureCard({ item, mode, onDelete, onEdit, onOrder }: FurnitureCardProps) {
     const { t } = useLang();
 
     return (
         <Card className="app-card fade-in">
             <Box className="furn-img-wrap">
-                {item.image_url ? (
-                    <img src={item.image_url} alt={item.name} className="img-cover" />
-                ) : (
-                    <Box className="loading-centered" sx={{ flexDirection: 'column', gap: 1 }}>
-                        <ImageOff size={40} color="#bdbdbd" />
-                        <Typography variant="caption" color="textSecondary">
-                            {t('common.no_photo')}
-                        </Typography>
-                    </Box>
-                )}
+                {item.image_url ? (<img src={item.image_url} alt={item.name} className="img-cover" />)
+                    : (
+                        <Box className="loading-centered" sx={{ flexDirection: 'column', gap: 1 }}>
+                            <ImageOff size={40} color="#bdbdbd" />
+                            <Typography variant="caption" color="textSecondary">
+                                {t('common.no_photo')}
+                            </Typography>
+                        </Box>
+                    )}
                 <Chip label={t(`categories.${item.category}`)} size="small" className="furn-type-tag" />
             </Box>
 
@@ -37,11 +36,11 @@ export const FurnitureCard = ({ item, mode, onDelete, onEdit, onOrder }: Furnitu
                     </Typography>
                 </Box>
 
-                <Typography variant="body2" className="text-secondary-limit">
+                <Typography variant="body2" className="producer-bio">
                     {item.description || t('home.no_bio')}
                 </Typography>
 
-                <Typography variant="h6" className="price-accent" style={{ marginTop: '16px' }}>
+                <Typography variant="h6" className="price-text-secondary" sx={{ mt: 2 }}>
                     {item.price.toLocaleString()} {t('common.currency')}
                 </Typography>
             </CardContent>
@@ -49,21 +48,20 @@ export const FurnitureCard = ({ item, mode, onDelete, onEdit, onOrder }: Furnitu
             <CardActions className="furn-actions">
                 {mode === 'producer' ? (
                     <>
-                        <Button onClick={() => onEdit?.(item)} variant="outlined" fullWidth
-                            startIcon={<Edit3 size={16} />} className="btn-base">
+                        <Button onClick={() => onEdit?.(item)} variant="outlined" startIcon={<Edit3 size={16} />}
+                            className="btn-base" sx={{ flexGrow: 1 }}>
                             {t('common.edit')}
                         </Button>
 
-                        <Button onClick={() => onDelete?.(item.id)} variant="outlined"
-                            style={{ minWidth: '48px' }} color="error" className="btn-base">
+                        <Button onClick={() => onDelete?.(item.id)} variant="outlined" color="error"
+                            className="btn-base" sx={{ minWidth: '48px' }}>
                             <Trash2 size={16} />
                         </Button>
                     </>
                 ) : (
-
                     onOrder && (
-                        <Button onClick={() => onOrder(item)} variant="contained" fullWidth
-                            startIcon={<ShoppingCart size={18} />} className="btn-base">
+                        <Button onClick={() => onOrder(item)} variant="contained" startIcon={<ShoppingCart size={18} />}
+                            className="btn-base" sx={{ flexGrow: 1 }}>
                             {t('common.buy')}
                         </Button>
                     )
@@ -72,3 +70,5 @@ export const FurnitureCard = ({ item, mode, onDelete, onEdit, onOrder }: Furnitu
         </Card>
     );
 };
+
+export default FurnitureCard;

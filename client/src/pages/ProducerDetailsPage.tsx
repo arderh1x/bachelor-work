@@ -5,15 +5,15 @@ import { furnitureApi } from '@/api/furnitureApi';
 import { profilesApi } from '@/api/profilesApi';
 import { useLang } from '@/hooks/useLang';
 import { useToast } from '@/hooks/useToast';
-import { useAuth } from '@/hooks/useAuth'; // Додаємо авторизацію
+import { useAuth } from '@/hooks/useAuth';
 import type { Furniture, Producer } from '@shared/types';
 import ProducerDetails from '../components/producer/ProducerDetails';
 
-export default function ProducerDetailsPage() {
+function ProducerDetailsPage() {
     const { id } = useParams<{ id: string }>();
     const { t } = useLang();
     const { showToast } = useToast();
-    const { user } = useAuth(); // Отримуємо поточного користувача
+    const { user } = useAuth();
 
     const [producer, setProducer] = useState<Producer | null>(null);
     const [items, setItems] = useState<Furniture[]>([]);
@@ -39,14 +39,10 @@ export default function ProducerDetailsPage() {
                     setItems(furnitureData);
                 }
             } catch (err) {
-                console.error("Producer data loading error:", err);
-                if (isMounted) {
-                    showToast(t('errors.fetch_producers'), 'error');
-                }
+                console.error("[ProducerDetailsPage] Failed on loading producer details:", err);
+                if (isMounted) showToast(t('errors.fetch_producers'), 'error');
             } finally {
-                if (isMounted) {
-                    setLoading(false);
-                }
+                if (isMounted) setLoading(false);
             }
         };
 
@@ -63,19 +59,20 @@ export default function ProducerDetailsPage() {
     }
 
     return (
-        <Box component="main" className="page-container fade-in">
+        <Box component="section" className="fade-in">
             {producer ? (
-                <ProducerDetails
-                    producer={producer}
-                    items={items}
-                    loading={loading}
-                    isOwner={isOwner}
-                />
+                <ProducerDetails producer={producer} items={items} loading={loading} isOwner={isOwner} />
             ) : (
-                <Box className="empty-state-wrap">
-                    <Typography color="textSecondary">{t('errors.profile_not_found')}</Typography>
+                <Box className="page-container">
+                    <Box className="empty-state-wrap">
+                        <Typography color="textSecondary">
+                            {t('errors.profile_not_found')}
+                        </Typography>
+                    </Box>
                 </Box>
             )}
         </Box>
     );
 }
+
+export default ProducerDetailsPage;

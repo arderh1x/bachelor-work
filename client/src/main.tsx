@@ -9,8 +9,16 @@ import App from './App';
 import '@/styles/tokens.css';
 import '@/styles/global.css';
 import '@/styles/layout.css';
-import '@/styles/components.css';
-import '@/styles/pages.css';
+
+import '@/styles/components/cards.css';
+import '@/styles/components/forms.css';
+import '@/styles/components/navbar.css';
+import '@/styles/components/sidebar.css';
+
+import '@/styles/pages/auth.css';
+import '@/styles/pages/not-found.css';
+import '@/styles/pages/faq.css'
+import '@/styles/pages/profile.css';
 
 import { LangProvider } from './context/LangContext';
 import { ToastProvider } from './context/ToastContext';

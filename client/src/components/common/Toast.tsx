@@ -9,10 +9,11 @@ interface ToastProps {
 
 export const Toast = ({ open, message, severity = 'error', onClose }: ToastProps) => {
     return (
-        <Snackbar onClose={onClose} open={open} autoHideDuration={6000}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
+        <Snackbar onClose={onClose} open={open}
+            autoHideDuration={6000} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
 
-            <Alert onClose={onClose} severity={severity} variant="filled" sx={{ width: '100%' }}>
+            <Alert onClose={onClose} severity={severity} variant="filled"
+                sx={{ width: '100%', borderRadius: 'var(--radius-md)' }}>
                 {message}
             </Alert>
         </Snackbar>

@@ -2,13 +2,13 @@ import { Box, Typography, Paper, Chip, Button, Divider, Stack, type ChipProps } 
 import { type OrderWithDetails, OrderStatus } from '@shared/types';
 import { useLang } from '@/hooks/useLang';
 
-interface Props {
+interface OrderCardProps {
     order: OrderWithDetails;
     mode: 'customer' | 'producer';
     onStatusChange?: (id: number, newStatus: OrderStatus) => void;
 }
 
-export const OrderCard = ({ order, mode, onStatusChange }: Props) => {
+function OrderCard({ order, mode, onStatusChange }: OrderCardProps) {
     const { t } = useLang();
     const isProducer = mode === 'producer';
 
@@ -38,12 +38,8 @@ export const OrderCard = ({ order, mode, onStatusChange }: Props) => {
                 <Typography variant="subtitle2" color="textSecondary">
                     №{order.id} — {date}
                 </Typography>
-                <Chip
-                    label={t(`status.${order.status.toLowerCase()}`)}
-                    color={getStatusColor(order.status)}
-                    size="small"
-                    className="btn-base"
-                />
+                <Chip label={t(`status.${order.status.toLowerCase()}`)}
+                    color={getStatusColor(order.status)} size="small" />
             </Box>
 
             <Typography variant="h6" className="card-title">
@@ -70,36 +66,40 @@ export const OrderCard = ({ order, mode, onStatusChange }: Props) => {
 
             {isProducer && onStatusChange && (
                 <>
-                    <Divider />
+                    <Divider className="divider-std" />
+
                     <Box className="order-actions">
                         {order.status === OrderStatus.PENDING && (
-                            <Button size="small" variant="contained" color="info" className="btn-base"
-                                onClick={() => onStatusChange(order.id, OrderStatus.ACCEPTED)}>
+                            <Button onClick={() => onStatusChange(order.id, OrderStatus.ACCEPTED)}
+                                variant="contained" size="small" color="info" className="btn-base">
                                 {t('orders.action.accept')}
                             </Button>
                         )}
+
                         {order.status === OrderStatus.ACCEPTED && (
-                            <Button size="small" variant="contained" color="primary" className="btn-base"
-                                onClick={() => onStatusChange(order.id, OrderStatus.IN_PROGRESS)}>
+                            <Button onClick={() => onStatusChange(order.id, OrderStatus.IN_PROGRESS)}
+                                variant="contained" size="small" color="primary" className="btn-base">
                                 {t('orders.action.start')}
                             </Button>
                         )}
+
                         {order.status === OrderStatus.IN_PROGRESS && (
-                            <Button size="small" variant="contained" color="secondary" className="btn-base"
-                                onClick={() => onStatusChange(order.id, OrderStatus.SHIPPED)}>
+                            <Button onClick={() => onStatusChange(order.id, OrderStatus.SHIPPED)}
+                                variant="contained" size="small" color="secondary" className="btn-base">
                                 {t('orders.action.ship')}
                             </Button>
                         )}
+
                         {order.status === OrderStatus.SHIPPED && (
-                            <Button size="small" variant="contained" color="success" className="btn-base"
-                                onClick={() => onStatusChange(order.id, OrderStatus.COMPLETED)}>
+                            <Button onClick={() => onStatusChange(order.id, OrderStatus.COMPLETED)}
+                                variant="contained" size="small" color="success" className="btn-base">
                                 {t('orders.action.complete')}
                             </Button>
                         )}
 
                         {![OrderStatus.COMPLETED, OrderStatus.CANCELLED].includes(order.status) && (
-                            <Button size="small" variant="outlined" color="error" className="btn-base"
-                                onClick={() => onStatusChange(order.id, OrderStatus.CANCELLED)}>
+                            <Button onClick={() => onStatusChange(order.id, OrderStatus.CANCELLED)}
+                                variant="outlined" size="small" color="error" className="btn-base">
                                 {t('common.cancel')}
                             </Button>
                         )}
@@ -109,3 +109,5 @@ export const OrderCard = ({ order, mode, onStatusChange }: Props) => {
         </Paper>
     );
 };
+
+export default OrderCard;

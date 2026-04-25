@@ -3,10 +3,10 @@ import { Dialog, DialogContent, DialogTitle, Stepper, Step, StepLabel, Box, Typo
 import { FurnitureCategory, type Furniture, type CreateFurnitureDTO, type CreateOrderDTO } from '@shared/types';
 import { ordersApi } from '@/api/ordersApi';
 import { useLang } from '@/hooks/useLang';
-import { OrderForm, type OrderContactData } from './OrderForm';
-import { FurnitureBaseForm } from '@/components/furniture/FurnitureBaseForm';
+import OrderForm, { type OrderContactData } from './OrderForm';
+import FurnitureBaseForm from '@/components/furniture/FurnitureBaseForm';
 
-interface Props {
+interface OrderModalProps {
     open: boolean;
     onClose: () => void;
     producerId: number;
@@ -15,7 +15,7 @@ interface Props {
     onError: (message: string) => void;
 }
 
-export const OrderModal = ({ open, onClose, producerId, furnitureItem, onSuccess, onError }: Props) => {
+function OrderModal({ open, onClose, producerId, furnitureItem, onSuccess, onError }: OrderModalProps) {
     const { t } = useLang();
 
     const [activeStep, setActiveStep] = useState(0);
@@ -48,7 +48,8 @@ export const OrderModal = ({ open, onClose, producerId, furnitureItem, onSuccess
             await ordersApi.create(fullOrder);
             onSuccess(t('orders.success_message'));
             handleClose();
-        } catch {
+        } catch (error) {
+            console.error('[OrderModal] Failed to submit:', error);
             onError(t('errors.order_failed'));
         } finally {
             setIsSubmitting(false);
@@ -58,13 +59,8 @@ export const OrderModal = ({ open, onClose, producerId, furnitureItem, onSuccess
     const currentStep = furnitureItem ? 1 : activeStep;
 
     return (
-        <Dialog
-            open={open}
-            onClose={handleClose}
-            fullWidth
-            maxWidth="sm"
-            PaperProps={{ className: 'app-card' }}
-        >
+        <Dialog onClose={handleClose} open={open} fullWidth maxWidth="sm"
+            PaperProps={{ className: 'app-card' }}>
             <DialogTitle className="dialog-header-title">
                 {furnitureItem
                     ? `${t('orders.item_title')}: ${furnitureItem.name}`
@@ -73,11 +69,7 @@ export const OrderModal = ({ open, onClose, producerId, furnitureItem, onSuccess
 
             <DialogContent className="dialog-body-padding">
                 {!furnitureItem && (
-                    <Stepper
-                        activeStep={currentStep}
-                        className="form-container-padding"
-                        sx={{ mb: 3 }}
-                    >
+                    <Stepper activeStep={currentStep} className="form-container-padding">
                         {steps.map((label) => (
                             <Step key={label}>
                                 <StepLabel>{label}</StepLabel>
@@ -89,34 +81,28 @@ export const OrderModal = ({ open, onClose, producerId, furnitureItem, onSuccess
                 {furnitureItem && (
                     <Box className="info-box-padding">
                         <Typography variant="body2" className="price-text-secondary">
-                            {t('inventory.price')}: {furnitureItem.price} {t('common.currency')}
+                            <strong>{t('inventory.price')}:</strong> {furnitureItem.price} {t('common.currency')}
                         </Typography>
                     </Box>
                 )}
 
                 {currentStep === 0 ? (
-                    <FurnitureBaseForm
-                        onSubmit={handleNextStep}
-                        onCancel={handleClose}
-                        isSubmitting={false}
-                        submitText={t('common.next')}
+                    <FurnitureBaseForm onSubmit={handleNextStep} onCancel={handleClose}
+                        isSubmitting={false} submitText={t('common.next')}
                         initialData={furnData || {
                             name: '',
                             price: 0,
                             category: FurnitureCategory.OTHER,
                             description: '',
                             image_url: null
-                        }}
-                    />
+                        }} />
                 ) : (
-                    <OrderForm
-                        onSubmit={handleFinalSubmit}
-                        onCancel={() => furnitureItem ? handleClose() : setActiveStep(0)}
-                        isSubmitting={isSubmitting}
-                        submitText={t('orders.confirm')}
-                    />
+                    <OrderForm onSubmit={handleFinalSubmit} onCancel={() => furnitureItem ? handleClose() : setActiveStep(0)}
+                        isSubmitting={isSubmitting} submitText={t('orders.confirm')} />
                 )}
             </DialogContent>
         </Dialog>
     );
 };
+
+export default OrderModal;

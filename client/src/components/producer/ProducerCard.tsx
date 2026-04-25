@@ -4,18 +4,18 @@ import { useNavigate } from 'react-router-dom';
 import { useLang } from '@/hooks/useLang';
 import type { Producer } from '@shared/types';
 
-export const ProducerCard = ({ producer }: { producer: Producer }) => {
+interface ProducerCardProps {
+    producer: Producer;
+}
+
+function ProducerCard({ producer }: ProducerCardProps) {
     const { t } = useLang();
     const navigate = useNavigate();
 
     return (
         <Card className="app-card producer-card">
-            {/* Верхня частина з градієнтом та аватаром */}
             <Box className="producer-card-header">
-                <Avatar
-                    src={producer.avatar_url || ''}
-                    className="producer-avatar-wrap"
-                >
+                <Avatar src={producer.avatar_url || ''} className="producer-avatar-wrap">
                     {!producer.avatar_url && <Store size={32} />}
                 </Avatar>
             </Box>
@@ -29,16 +29,13 @@ export const ProducerCard = ({ producer }: { producer: Producer }) => {
                     {producer.bio || t('home.no_bio')}
                 </Typography>
 
-                <Button
-                    onClick={() => navigate(`/producer/${producer.user_id}`)}
-                    variant="outlined"
-                    fullWidth
-                    className="btn-base"
-                    endIcon={<ArrowRight size={18} />}
-                >
+                <Button onClick={() => navigate(`/producer/${producer.user_id}`)} variant="outlined"
+                    fullWidth endIcon={<ArrowRight size={18} />} className="btn-base">
                     {t('home.view_workshop')}
                 </Button>
             </CardContent>
         </Card>
     );
 };
+
+export default ProducerCard;

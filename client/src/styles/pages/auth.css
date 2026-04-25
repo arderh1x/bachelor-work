@@ -1,0 +1,28 @@
+.page-container-auth {
+    margin-top: 10vh;
+    display: flex;
+    justify-content: center;
+}
+
+.auth-card {
+    padding: 40px !important;
+    width: 100%;
+    background-color: var(--bg-surface) !important;
+    color: var(--text-main) !important;
+}
+
+.auth-link {
+    color: var(--primary-amber);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.auth-link:hover {
+    text-decoration: underline;
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 16px;
+    color: var(--text-secondary);
+}

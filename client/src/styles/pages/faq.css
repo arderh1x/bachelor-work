@@ -1,0 +1,29 @@
+.faq-list {
+    padding: 8px 0;
+    width: 100%;
+    margin-top: 32px;
+}
+
+.faq-accordion {
+    margin-bottom: 16px !important;
+    overflow: hidden;
+}
+
+.faq-accordion::before {
+    display: none !important;
+}
+
+.faq-accordion-summary {
+    border-bottom: none !important;
+}
+
+.faq-answer-paragraph {
+    max-width: 100% !important;
+    text-align: left !important;
+    margin-bottom: 16px !important;
+    color: var(--text-secondary);
+}
+
+.faq-answer-paragraph:last-child {
+    margin-bottom: 0 !important;
+}

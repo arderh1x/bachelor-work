@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Typography, Grid2 } from '@mui/material';
-import { FurnitureCard } from './FurnitureCard';
+import FurnitureCard from './FurnitureCard';
 import { useLang } from '@/hooks/useLang';
 import type { Furniture } from '@shared/types';
 
@@ -12,7 +12,7 @@ interface FurnitureListProps {
     onOrder?: (item: Furniture) => void;
 }
 
-export const FurnitureList = ({ items, loading, mode, onDelete, onEdit, onOrder }: FurnitureListProps) => {
+function FurnitureList({ items, loading, mode, onDelete, onEdit, onOrder }: FurnitureListProps) {
     const { t } = useLang();
 
     if (loading) return (
@@ -23,7 +23,7 @@ export const FurnitureList = ({ items, loading, mode, onDelete, onEdit, onOrder 
 
     if (items.length === 0) return (
         <Box className="empty-state-wrap">
-            <Typography variant="body1">
+            <Typography variant="body1" className="empty-text">
                 {t('common.no_items')}
             </Typography>
         </Box>
@@ -42,3 +42,5 @@ export const FurnitureList = ({ items, loading, mode, onDelete, onEdit, onOrder 
         </Box>
     );
 };
+
+export default FurnitureList;

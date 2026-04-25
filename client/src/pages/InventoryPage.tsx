@@ -3,13 +3,13 @@ import { Typography, Button, Box, Dialog, DialogContent, DialogTitle } from '@mu
 import { Plus } from 'lucide-react';
 
 import { furnitureApi } from '@/api/furnitureApi';
-import { FurnitureList } from '@/components/furniture/FurnitureList';
+import FurnitureList from '@/components/furniture/FurnitureList';
 import { useLang } from '@/hooks/useLang';
-import { useToast } from '@/hooks/useToast'; // Використовуємо наш новий хук
+import { useToast } from '@/hooks/useToast';
 import { FurnitureCategory, type Furniture, type CreateFurnitureDTO } from '@shared/types';
-import { FurnitureBaseForm } from '@/components/furniture/FurnitureBaseForm';
+import FurnitureBaseForm from '@/components/furniture/FurnitureBaseForm';
 
-const InventoryPage = () => {
+function InventoryPage() {
     const { t } = useLang();
     const { showToast } = useToast();
 
@@ -24,22 +24,16 @@ const InventoryPage = () => {
         try {
             const data = await furnitureApi.getMyFurniture();
             setItems(data);
-        } catch {
-            showToast(t('errors.fetch_failed'), 'error');
-        } finally {
-            setLoading(false);
-        }
+        } catch { showToast(t('errors.fetch_failed'), 'error') }
+        finally { setLoading(false) }
     }, [t, showToast]);
 
     useEffect(() => {
         let isMounted = true;
 
         const loadData = async () => {
-            if (isMounted) {
-                await fetchItems();
-            }
+            if (isMounted) await fetchItems();
         };
-
         loadData();
 
         return () => {
@@ -69,7 +63,8 @@ const InventoryPage = () => {
             }
             setModalOpen(false);
             fetchItems();
-        } catch {
+        } catch (error) {
+            console.error("[InventoryPage] Failed to submit form:", error);
             showToast(t('errors.update_failed'), 'error');
         } finally {
             setSubmitting(false);
@@ -89,55 +84,37 @@ const InventoryPage = () => {
 
     return (
         <Box component="main" className="page-container fade-in">
-            {/* Хедер сторінки */}
             <Box className="section-header-row">
-                <Typography variant="h4" className="page-title">
-                    {t('inventory.title')}
-                </Typography>
-                <Button
-                    onClick={handleOpenAdd}
-                    variant="contained"
-                    startIcon={<Plus size={20} />}
-                    className="btn-base" // Використовуємо системний клас кнопок
-                >
+                <Box>
+                    <Typography variant="h4" className="page-title">
+                        {t('inventory.title')}
+                    </Typography>
+                </Box>
+
+                <Button onClick={handleOpenAdd} variant="contained" startIcon={<Plus size={20} />} className="btn-base">
                     {t('inventory.add_item')}
                 </Button>
             </Box>
+            <FurnitureList onDelete={handleDelete} onEdit={handleOpenEdit}
+                items={items} loading={loading} mode="producer" />
 
-            {/* Список меблів */}
-            <FurnitureList
-                items={items}
-                loading={loading}
-                mode="producer"
-                onDelete={handleDelete}
-                onEdit={handleOpenEdit}
-            />
-
-            {/* Модальне вікно форми */}
-            <Dialog
-                onClose={() => !submitting && setModalOpen(false)}
-                open={modalOpen}
-                fullWidth
-                maxWidth="sm"
-            >
+            <Dialog onClose={() => !submitting && setModalOpen(false)} open={modalOpen}
+                fullWidth maxWidth="sm" PaperProps={{ className: "app-card" }}>
                 <DialogTitle className="dialog-header-title">
                     {editingItem ? t('inventory.edit_item') : t('inventory.add_item')}
                 </DialogTitle>
+
                 <DialogContent className="dialog-body-padding">
-                    <FurnitureBaseForm
-                        onSubmit={handleSubmit}
-                        onCancel={() => setModalOpen(false)}
-                        key={editingItem?.id || 'new'}
+                    <FurnitureBaseForm onSubmit={handleSubmit} onCancel={() => setModalOpen(false)}
                         submitText={editingItem ? t('common.save') : t('inventory.add_item')}
-                        isSubmitting={submitting}
+                        isSubmitting={submitting} key={editingItem?.id || 'new'}
                         initialData={editingItem || {
                             name: '',
                             price: 0,
                             category: FurnitureCategory.OTHER,
                             description: '',
                             image_url: ''
-                        }}
-                    />
+                        }} />
                 </DialogContent>
             </Dialog>
         </Box>

@@ -1,0 +1,106 @@
+.sidebar-nav {
+    width: var(--sidebar-width);
+    flex-shrink: 0;
+    box-sizing: border-box;
+}
+
+.sidebar-paper {
+    width: var(--sidebar-width) !important;
+    z-index: 1200 !important;
+    box-sizing: border-box;
+    border-right: 1px solid var(--border-color) !important;
+    background-color: var(--bg-surface) !important;
+    color: var(--text-main) !important;
+    transition: background-color var(--transition-std) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+}
+
+.sidebar-section-title {
+    padding: 0 16px !important;
+    opacity: 0.5;
+    text-transform: uppercase;
+    font-size: 0.75rem !important;
+    font-weight: 700 !important;
+    margin-bottom: 8px !important;
+    display: block;
+}
+
+.sidebar-header {
+    padding: 20px;
+    text-align: center;
+}
+
+.sidebar-header .brand-text {
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--text-main);
+}
+
+.sidebar-list {
+    padding: 16px 8px !important;
+}
+
+/* --- Item button base --- */
+.sidebar-item-btn {
+    border-radius: var(--radius-md) !important;
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+    margin-bottom: 4px !important;
+    color: var(--text-secondary) !important;
+    transition: background-color var(--transition-fast), color var(--transition-fast) !important;
+    background-color: transparent !important;
+}
+
+.sidebar-item-btn:hover {
+    background-color: var(--primary-amber-light) !important;
+    color: var(--primary-amber) !important;
+}
+
+.sidebar-item-btn.Mui-selected,
+.sidebar-item-btn.Mui-selected:hover {
+    background-color: var(--primary-amber-light) !important;
+    color: var(--primary-amber) !important;
+}
+
+.sidebar-item-icon {
+    min-width: 40px !important;
+    color: inherit !important;
+}
+
+.sidebar-item-text span {
+    font-size: 0.95rem !important;
+}
+
+/* --- Active state --- */
+.sidebar-active-item {
+    background-color: var(--primary-amber-light) !important;
+    color: var(--primary-amber) !important;
+}
+
+.sidebar-active-item .sidebar-item-text span {
+    font-weight: 700 !important;
+}
+
+/* --- Responsive --- */
+.sidebar-mobile {
+    display: none;
+}
+
+.sidebar-desktop {
+    display: block;
+}
+
+@media (max-width: 900px) {
+    .sidebar-mobile {
+        display: block;
+    }
+
+    .sidebar-desktop {
+        display: none;
+    }
+
+    .sidebar-nav {
+        width: 0;
+    }
+}

@@ -1,90 +1,127 @@
 export default {
     brand: "RedS7",
+    common: {
+        save: "Save",
+        cancel: "Cancel",
+        edit: "Edit",
+        delete: "Delete",
+        next: "Next",
+        back: "Back",
+        loading: "Loading...",
+        no_photo: "No photo",
+        currency: "UAH",
+        category: "Category",
+        buy: "Buy",
+        no_items: "No items found",
+        delete_success: "Deleted successfully",
+    },
+
     nav: {
         home: "Home",
-        hello: "Hello",
         login: "Login",
         logout: "Logout",
         toggle_theme: "Toggle Theme",
         toggle_lang: "Toggle Language",
+        mode_toggle: "Toggle Mode",
         mode_customer: "Customer Mode",
         mode_producer: "Producer Mode",
     },
+
+    theme: {
+        light: "Light Mode",
+        dark: "Dark Mode",
+    },
+
     sidebar: {
         home: "Main page",
         inventory: "My Inventory",
         orders: "Orders",
         faq: "FAQ",
+        settings: "Settings",
         profile: "Profile",
     },
+
+    auth: {
+        registration_title: "Registration",
+        login_title: "Login",
+        register_button: "Register",
+        register_success: "Registration successful!",
+        mode_switched_success: "Mode switched successfully",
+        mode_switched_error: "Error switching mode",
+        have_account: "Already have an account?",
+        no_account: "No account?",
+        register_link: "Create account",
+    },
+
     home: {
         title: "Our Masters",
         subtitle: "Choose a professional for your custom project",
         no_producers: "No registered masters found at the moment.",
         no_bio: "No description provided.",
         view_workshop: "Visit Workshop",
-        private_workshop: "Private Workshop"
     },
-    producer: {
-        catalog_title: "Workshop Catalog",
-        catalog_subtitle: "Choose ready-made items or make an individual request",
-        order_custom: "Order something unique",
-        bio_limit: "Short bio",
-    },
+
     profile: {
         settings_title: "Profile Settings",
         edit_title: "Edit Profile",
         customer_title: "Customer Profile",
+        username: "Username",
+        password: "Password",
         about_me: "About Me",
         about_workshop: "About Workshop",
         workshop_name: "Workshop Name",
-        payment_methods: "Accepted Payment Methods",
-        payment_placeholder: "e.g. Card, Cash, PayPal",
-        bio: "Description",
-        avatar_url: "Avatar Image URL",
-        no_bio: "No description provided yet.",
-        no_methods: "Payment methods not specified.",
-        save_success: "Profile updated successfully!",
+        avatar_url: "Avatar URL",
+        bio: "Bio / Description",
+        no_bio: "No bio provided",
+        payment_methods: "Payment Methods",
+        payment_placeholder: "E.g.: Card, Cash on delivery",
+        no_methods: "No payment methods specified",
+        verified_producer: "Verified Master",
+        producer_mode: "Producer Mode",
         edit_button: "Edit Profile",
-        username: "Username",
-        password: "Password",
-        upload_avatar: "Update Photo",
+        save_success: "Profile updated successfully",
     },
+
     inventory: {
         title: "My Inventory",
-        add_item: "Add New Item",
+        add_item: "Add Item",
         edit_item: "Edit Item",
         item_name: "Item Name",
         price: "Price",
+        description: "Description",
+        image_url: "Image URL",
+        update_success: "Item updated",
+        add_success: "Item added",
         delete_confirm: "Are you sure you want to delete this item?",
-        add_success: "Item added successfully!",
-        update_success: "Item updated successfully!",
     },
+
     orders: {
         title: "Orders",
-        custom_title: "Custom Project Request",
-        item_title: "Order Placement",
-        step_params: "Item Parameters",
-        step_delivery: "Delivery & Contact",
-        quantity: "Quantity (pcs)",
+        producer_subtitle: "Client requests",
+        customer_subtitle: "Your orders",
+        item_title: "Item",
+        custom_title: "Custom Order",
+        custom_project: "Special Project",
+        quantity: "Quantity",
         phone: "Phone Number",
+        phone_placeholder: "+380...",
         delivery_address: "Delivery Address",
-        address_placeholder: "City, post office or street",
-        comment: "Order Comment",
+        address_placeholder: "City, post office...",
+        comment: "Comment",
         confirm: "Confirm Order",
         success_message: "Order created successfully!",
-        custom_project: "Individual Project",
-        empty_list: "No orders found.",
-        status_updated: "Status updated successfully",
-        producer_subtitle: "Manage incoming orders and update their statuses",
-        customer_subtitle: "Track your orders and purchase history",
+        status_updated: "Status updated",
+        empty_list: "Order list is empty",
+        step_params: "Parameters",
+        step_delivery: "Delivery",
         action: {
             accept: "Accept",
             start: "Start Work",
-            ship: "Ship Order",
+            ship: "Ship",
             complete: "Complete",
         }
     },
+
     status: {
         pending: "Pending",
         accepted: "Accepted",
@@ -93,75 +130,60 @@ export default {
         completed: "Completed",
         cancelled: "Cancelled",
     },
-    common: {
-        buy: "Order Now",
-        edit: "Edit",
-        delete: "Delete",
-        save: "Save",
-        cancel: "Cancel",
-        next: "Next",
-        currency: "USD",
-        loading: "Loading...",
-        no_items: "No products found.",
-        no_photo: "No photo",
-        category: "Category",
-        back: "Back",
-        delete_success: "Deleted successfully",
-    },
+
     categories: {
         Table: "Tables",
         Chair: "Chairs",
         Wardrobe: "Wardrobes",
         Bed: "Beds",
         Sofa: "Sofas",
-        Other: "Other"
+        Other: "Other",
     },
-    auth: {
-        registration_title: "Registration",
-        register_button: "Register",
-        register_success: "Registration successful! You can now log in.",
-        no_account: "Don't have an account?",
-        register_link: "Create one",
-        have_account: "Already have an account?",
-        mode_switched_success: "Mode switched successfully!",
+
+    producer: {
+        catalog_title: "Workshop Catalog",
+        catalog_subtitle: "Choose ready-made items or make an individual request",
+        order_custom: "Order something unique",
     },
+
     faq: {
-        title: "Frequently Asked Questions",
+        title: "FAQ",
         questions: {
             how_it_works: {
-                question: "How does the furniture ordering work?",
+                question: "How to order?",
                 answer: [
-                    "You choose a craftsman in our catalog or browse ready-made items in their workshop.",
-                    "You can send an individual request for the manufacture of a unique item.",
-                    "After clarifying the details, the master gets to work, and you receive order status updates."
+                    "Select a master on the main page.",
+                    "Go to their catalog and choose an item.",
+                    "Fill in your contact info and wait for confirmation."
                 ]
             },
             payment: {
-                question: "What payment methods are available?",
+                question: "Payment methods?",
                 answer: [
-                    "Payment is usually made in installments: a deposit for the purchase of materials and the final payment upon receipt.",
-                    "Each master indicates their payment methods (card, cash, or bank transfer) in their profile."
+                    "Usually a deposit and final payment.",
+                    "Check the master's profile for details."
                 ]
             },
             delivery: {
-                question: "How is delivery carried out?",
+                question: "How about delivery?",
                 answer: [
-                    "Delivery is discussed individually with each master.",
-                    "Pickup from the workshop or delivery via popular postal services throughout Ukraine is possible."
+                    "Discussed individually with the master.",
+                    "Pickup or shipping is available."
                 ]
             }
         }
     },
 
     errors: {
-        fetch_producers: "Failed to load the list of masters",
+        fetch_producers: "Failed to load masters list",
         fetch_profile: "Failed to load profile data",
+        fetch_failed: "Error loading data",
         update_failed: "Failed to update information",
         order_failed: "Failed to create order",
         profile_not_found: "Profile not found",
         page_not_found: "Page Not Found",
-        page_not_found_desc: "It seems this furniture hasn't been assembled yet, or you've followed a broken link.",
-        delete_failed: "Failed to delete the item",
-        fetch_failed: "Error loading data",
-    }
+        page_not_found_desc: "It seems this furniture hasn't been assembled yet.",
+        delete_failed: "Failed to delete",
+        register_failed: "Registration failed",
+    },
 };

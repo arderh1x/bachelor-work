@@ -2,9 +2,9 @@ import { useEffect, useState, useCallback } from 'react';
 import { Box, Typography, CircularProgress, Stack } from '@mui/material';
 import { ordersApi } from '@/api/ordersApi';
 import { type OrderWithDetails, OrderStatus } from '@shared/types';
-import { OrderCard } from './OrderCard';
+import OrderCard from './OrderCard';
 import { useLang } from '@/hooks/useLang';
-import { useToast } from '@/hooks/useToast'; // Твій новий хук
+import { useToast } from '@/hooks/useToast';
 
 interface Props {
     mode: 'customer' | 'producer';
@@ -22,8 +22,8 @@ export const OrdersList = ({ mode }: Props) => {
         try {
             const data = await ordersApi.getMyOrders();
             setOrders(data);
-        } catch (err) {
-            console.error("Fetching orders failed:", err);
+        } catch (error) {
+            console.error("[OrdersList] Failed to fetch orders:", error);
             showToast(t('errors.fetch_failed'), 'error');
         } finally {
             setLoading(false);
@@ -35,8 +35,8 @@ export const OrdersList = ({ mode }: Props) => {
             await ordersApi.updateStatus(id, newStatus);
             showToast(t('orders.status_updated'), 'success');
             await fetchOrders();
-        } catch (err) {
-            console.error("Order update failed:", err);
+        } catch (error) {
+            console.error("[OrdersList] Failed to update order status:", error);
             showToast(t('errors.update_failed'), 'error');
         }
     };
@@ -45,16 +45,11 @@ export const OrdersList = ({ mode }: Props) => {
         let isMounted = true;
 
         const loadData = async () => {
-            if (isMounted) {
-                await fetchOrders();
-            }
+            if (isMounted) await fetchOrders();
         };
-
         loadData();
 
-        return () => {
-            isMounted = false;
-        };
+        return () => { isMounted = false };
     }, [fetchOrders]);
 
     if (loading) {
@@ -70,14 +65,11 @@ export const OrdersList = ({ mode }: Props) => {
             {orders.length > 0 ? (
                 <Stack spacing={2} className="orders-stack">
                     {orders.map((order) => (
-                        <OrderCard
-                            key={order.id}
-                            order={order}
-                            mode={mode}
-                            onStatusChange={mode === 'producer' ? handleStatusChange : undefined}
-                        />
+                        <OrderCard key={order.id} order={order} mode={mode}
+                            onStatusChange={mode === 'producer' ? handleStatusChange : undefined} />
                     ))}
                 </Stack>
+
             ) : (
                 <Box className="empty-state-wrap">
                     <Typography color="textSecondary" className="empty-text">
@@ -85,7 +77,8 @@ export const OrdersList = ({ mode }: Props) => {
                     </Typography>
                 </Box>
             )}
-
         </Box>
     );
 };
+
+export default OrdersList;

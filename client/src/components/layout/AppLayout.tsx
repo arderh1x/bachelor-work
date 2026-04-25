@@ -17,18 +17,8 @@ function AppLayout() {
 
             <Sidebar mobileOpen={mobileOpen} onClose={handleDrawerToggle} />
 
-            <Box
-                component="main"
-                sx={{
-                    flexGrow: 1,
-                    ml: { md: 'var(--sidebar-width)' },
-                    width: { md: `calc(100% - var(--sidebar-width))` },
-                    minHeight: '100vh',
-                    transition: 'margin var(--transition-std)',
-                    bgcolor: 'var(--bg-light)',
-                }}
-            >
-                <Toolbar /> {/* Відступ від Navbar */}
+            <Box component="main" className="main-content">
+                <Toolbar />
                 <Box className="page-container fade-in">
                     <Outlet />
                 </Box>

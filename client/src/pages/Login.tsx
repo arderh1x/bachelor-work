@@ -5,10 +5,10 @@ import { authApi } from '@/api/authApi';
 import { isAxiosError } from 'axios';
 import { useAuth } from '@/hooks/useAuth';
 import { useLang } from '@/hooks/useLang';
-import { useToast } from '@/hooks/useToast'; // Новий хук
+import { useToast } from '@/hooks/useToast';
 import type { LoginDTO } from '@shared/types';
 
-const Login = () => {
+function Login() {
     const { t } = useLang();
     const navigate = useNavigate();
     const { login } = useAuth();
@@ -24,59 +24,40 @@ const Login = () => {
         try {
             const response = await authApi.login(formData);
             login(response.data.user);
-            // Видаляємо setError('') та показуємо успіх, якщо потрібно
             navigate('/');
-        } catch (err: unknown) {
+        } catch (err) {
             let message = t('errors.update_failed');
-            if (isAxiosError(err)) {
-                message = err.response?.data?.error || err.message;
-            }
-            showToast(message, 'error'); // Глобальний тост
-        } finally {
-            setIsSubmitting(false);
-        }
+            if (isAxiosError(err)) message = err.response?.data?.error || err.message;
+            showToast(message, 'error');
+        } finally { setIsSubmitting(false) }
     };
 
     return (
         <Container maxWidth="xs" className="fade-in page-container-auth">
             <Box component="article" className="app-card auth-card">
-                <Typography variant="h5" className="page-title" align="center" gutterBottom>
+                <Typography variant="h5" className="page-title" align="center">
                     {t('nav.login')}
                 </Typography>
 
-                <Box component="form" onSubmit={handleSubmit} className="form-stack">
-                    <TextField
-                        fullWidth
-                        label={t('profile.username') || "Username"}
-                        value={formData.username}
-                        onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                        required
-                        disabled={isSubmitting}
-                    />
-                    <TextField
-                        fullWidth
-                        type="password"
-                        label={t('profile.password') || "Password"}
-                        value={formData.password}
-                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                        required
-                        disabled={isSubmitting}
-                    />
+                <Box component="form" onSubmit={handleSubmit} className="form-container-padding">
+                    <Box className="form-stack">
+                        <TextField onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                            variant="outlined" value={formData.username} label={t('profile.username')}
+                            disabled={isSubmitting} fullWidth required />
 
-                    <Button
-                        fullWidth
-                        variant="contained"
-                        type="submit"
-                        className="btn-base"
-                        disabled={isSubmitting}
-                        sx={{ mt: 1 }}
-                    >
-                        {isSubmitting ? t('common.loading') : t('nav.login')}
-                    </Button>
+                        <TextField type="password" onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                            variant="outlined" value={formData.password} label={t('profile.password')}
+                            disabled={isSubmitting} fullWidth required />
+
+                        <Button type="submit" variant="contained" disabled={isSubmitting}
+                            fullWidth className="btn-base">
+                            {isSubmitting ? t('common.loading') : t('nav.login')}
+                        </Button>
+                    </Box>
 
                     <Box className="auth-footer">
                         <Typography variant="body2" color="textSecondary">
-                            {t('auth.no_account')} {' '}
+                            {t('auth.no_account')}{' '}
                             <Link to="/register" className="auth-link">
                                 {t('auth.register_link')}
                             </Link>

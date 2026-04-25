@@ -1,0 +1,144 @@
+/* --- Base card --- */
+.app-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--radius-lg) !important;
+    transition:
+        transform var(--transition-std),
+        box-shadow var(--transition-std) !important;
+    overflow: hidden;
+    background: var(--bg-surface) !important;
+    color: var(--text-main) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+.app-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md) !important;
+}
+
+.card-title {
+    font-weight: 700 !important;
+    margin-bottom: 8px !important;
+}
+
+
+/* --- Furniture card --- */
+.furn-img-wrap {
+    height: 200px;
+    position: relative;
+    overflow: hidden;
+    background-color: var(--bg-light);
+}
+
+.furn-content {
+    flex-grow: 1;
+    padding: 20px !important;
+}
+
+.furn-actions {
+    padding: 16px !important;
+    padding-top: 0 !important;
+    gap: 8px;
+}
+
+.furn-type-tag {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    backdrop-filter: blur(4px);
+    background-color: rgba(0, 0, 0, 0.6) !important;
+    color: #ffffff !important;
+}
+
+
+/* --- Order card --- */
+.order-card {
+    padding: 24px !important;
+    margin-bottom: 16px !important;
+    position: relative;
+    border-radius: var(--radius-lg) !important;
+    background-color: var(--bg-surface) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.order-details-stack {
+    margin-top: 12px;
+    margin-bottom: 16px;
+}
+
+.order-comment {
+    font-style: italic;
+    color: var(--text-secondary);
+    padding: 8px 12px;
+    background-color: rgba(0, 0, 0, 0.04);
+    border-radius: var(--radius-sm);
+    margin-top: 8px;
+}
+
+body.dark .order-comment {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.order-actions {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+
+/* --- Producer card --- */
+.producer-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.producer-card-header {
+    height: 100px;
+    width: 100%;
+    background: linear-gradient(135deg, var(--graphite-bg) 0%, #444444 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    margin-bottom: 40px;
+}
+
+.producer-avatar-wrap {
+    width: 80px !important;
+    height: 80px !important;
+    border: 4px solid var(--bg-surface) !important;
+    box-shadow: var(--shadow-sm);
+    position: absolute;
+    bottom: -40px;
+    background-color: var(--bg-surface) !important;
+    color: var(--graphite-bg) !important;
+}
+
+.producer-info {
+    padding: 16px 20px 20px !important;
+    width: 100%;
+}
+
+.producer-bio {
+    height: 40px;
+    margin-bottom: 16px !important;
+    color: var(--text-secondary);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}

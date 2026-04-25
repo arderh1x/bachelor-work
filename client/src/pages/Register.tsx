@@ -4,10 +4,10 @@ import { Container, TextField, Button, Typography, Box } from '@mui/material';
 import { authApi } from '@/api/authApi';
 import { isAxiosError } from 'axios';
 import { useLang } from '@/hooks/useLang';
-import { useToast } from '@/hooks/useToast'; // Новий хук
+import { useToast } from '@/hooks/useToast';
 import type { RegisterDTO } from '@shared/types';
 
-const Register = () => {
+function Register() {
     const { t } = useLang();
     const navigate = useNavigate();
     const { showToast } = useToast();
@@ -25,15 +25,11 @@ const Register = () => {
 
         try {
             await authApi.register(formData);
-            showToast(t('auth.register_success') || 'Registration successful!', 'success');
-
-            // Невелика затримка перед перенаправленням, щоб користувач встиг побачити тост
+            showToast(t('auth.register_success'), 'success');
             setTimeout(() => navigate('/login'), 1500);
-        } catch (err: unknown) {
-            let message = t('errors.update_failed');
-            if (isAxiosError(err)) {
-                message = err.response?.data?.error || err.message;
-            }
+        } catch (err) {
+            let message = t('errors.register_failed');
+            if (isAxiosError(err)) message = err.response?.data?.error || err.message;
             showToast(message, 'error');
         } finally {
             setIsSubmitting(false);
@@ -43,52 +39,28 @@ const Register = () => {
     return (
         <Container maxWidth="xs" className="fade-in page-container-auth">
             <Box component="article" className="app-card auth-card">
-                <Typography variant="h5" className="page-title" align="center" gutterBottom>
-                    {t('auth.registration_title') || "Registration"}
+                <Typography variant="h5" className="page-title" align="center">
+                    {t('auth.registration_title')}
                 </Typography>
 
                 <Box component="form" onSubmit={handleSubmit} className="form-stack">
-                    <TextField
-                        fullWidth
-                        label={t('profile.username') || "Username"}
-                        value={formData.username}
-                        onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                        required
-                        disabled={isSubmitting}
-                    />
-                    <TextField
-                        fullWidth
-                        type="email"
-                        label="Email"
-                        value={formData.email}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        required
-                        disabled={isSubmitting}
-                    />
-                    <TextField
-                        fullWidth
-                        type="password"
-                        label={t('profile.password') || "Password"}
-                        value={formData.password}
-                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                        required
-                        disabled={isSubmitting}
-                    />
+                    <TextField onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                        value={formData.username} label={t('profile.username')} disabled={isSubmitting} fullWidth required />
 
-                    <Button
-                        fullWidth
-                        variant="contained"
-                        type="submit"
-                        className="btn-base"
-                        disabled={isSubmitting}
-                        sx={{ mt: 1 }}
-                    >
-                        {isSubmitting ? t('common.loading') : t('auth.register_button') || "Register"}
+                    <TextField type="email" onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        value={formData.email} label="Email" disabled={isSubmitting} fullWidth required />
+
+                    <TextField type="password" onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                        value={formData.password} label={t('profile.password')} disabled={isSubmitting} fullWidth required />
+
+                    <Button type="submit" variant="contained" disabled={isSubmitting}
+                        fullWidth className="btn-base">
+                        {isSubmitting ? t('common.loading') : t('auth.register_button')}
                     </Button>
 
                     <Box className="auth-footer">
-                        <Typography variant="body2" color="textSecondary">
-                            {t('auth.have_account') || "Already have an account?"} {' '}
+                        <Typography variant="body2">
+                            {t('auth.have_account')} {' '}
                             <Link to="/login" className="auth-link">
                                 {t('nav.login')}
                             </Link>

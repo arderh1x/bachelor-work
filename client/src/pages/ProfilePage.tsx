@@ -2,12 +2,12 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import { Box, CircularProgress, Typography } from '@mui/material';
 import { profilesApi } from '@/api/profilesApi';
 import { useLang } from '@/hooks/useLang';
-import { useToast } from '@/hooks/useToast'; // Наш новий хук
-import { ProfileCard } from '@/components/profile/ProfileCard';
-import { ProfileEditForm } from '@/components/profile/ProfileEditForm';
+import { useToast } from '@/hooks/useToast';
+import ProfileCard from '@/components/profile/ProfileCard';
+import ProfileEditForm from '@/components/profile/ProfileEditForm';
 import type { ProfileResponse, UpdateProfileDTO } from '@shared/types';
 
-const ProfilePage = () => {
+function ProfilePage() {
     const { t } = useLang();
     const { showToast } = useToast();
     const isFirstRun = useRef(true);
@@ -24,7 +24,6 @@ const ProfilePage = () => {
             const data = await profilesApi.getMe();
             setProfile(data);
 
-            // Мапінг даних для форми редагування
             setFormData({
                 workshop_name: ('workshop_name' in data ? data.workshop_name : '') ?? '',
                 bio: data.bio ?? '',
@@ -32,7 +31,7 @@ const ProfilePage = () => {
                 payment_methods: ('payment_methods' in data ? data.payment_methods : '') ?? ''
             });
         } catch (err) {
-            console.error("Loading profile data error:", err)
+            console.error("[ProfilePage] Loading profile data error:", err);
             showToast(t('errors.fetch_profile'), 'error');
         } finally {
             setLoading(false);
@@ -68,9 +67,11 @@ const ProfilePage = () => {
 
     if (!profile) return (
         <Box className="page-container fade-in">
-            <Typography align="center" color="error" sx={{ mt: 4 }}>
-                {t('errors.profile_not_found')}
-            </Typography>
+            <Box className="empty-state-wrap">
+                <Typography className="empty-text">
+                    {t('errors.profile_not_found')}
+                </Typography>
+            </Box>
         </Box>
     );
 
@@ -82,20 +83,13 @@ const ProfilePage = () => {
                 </Typography>
             </Box>
 
-            <Box sx={{ maxWidth: '800px', margin: '0 auto' }}>
+            <Box className="form-container-padding" sx={{ maxWidth: '800px', margin: '0 auto' }}>
                 {isEditing ? (
-                    <ProfileEditForm
-                        formData={formData}
-                        onChange={setFormData}
-                        onSave={handleSave}
-                        onCancel={() => setIsEditing(false)}
-                    />
+                    <ProfileEditForm onChange={setFormData} onSave={handleSave}
+                        onCancel={() => setIsEditing(false)} formData={formData} />
                 ) : (
-                    <ProfileCard
-                        profile={profile}
-                        isEditable={true}
-                        onEdit={() => setIsEditing(true)}
-                    />
+                    <ProfileCard onEdit={() => setIsEditing(true)}
+                        variant="full" profile={profile} isEditable={true} />
                 )}
             </Box>
         </Box>

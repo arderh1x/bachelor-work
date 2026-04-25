@@ -3,7 +3,7 @@ import { Box, TextField, Button, MenuItem } from '@mui/material';
 import { FurnitureCategory, type CreateFurnitureDTO } from '@shared/types';
 import { useState, useCallback } from 'react';
 
-interface Props {
+interface FurnitureBaseFormProps {
     initialData: CreateFurnitureDTO;
     onSubmit: (data: CreateFurnitureDTO) => void;
     onCancel?: () => void;
@@ -11,7 +11,7 @@ interface Props {
     isSubmitting: boolean;
 }
 
-export const FurnitureBaseForm = ({ initialData, onSubmit, onCancel, submitText, isSubmitting }: Props) => {
+function FurnitureBaseForm({ initialData, onSubmit, onCancel, submitText, isSubmitting }: FurnitureBaseFormProps) {
     const { t } = useLang();
     const [formData, setFormData] = useState<CreateFurnitureDTO>(initialData);
 
@@ -20,10 +20,7 @@ export const FurnitureBaseForm = ({ initialData, onSubmit, onCancel, submitText,
         onSubmit(formData);
     };
 
-    const updateField = useCallback(<K extends keyof CreateFurnitureDTO>(
-        field: K,
-        value: CreateFurnitureDTO[K]
-    ) => {
+    const updateField = useCallback(<K extends keyof CreateFurnitureDTO>(field: K, value: CreateFurnitureDTO[K]) => {
         setFormData(prev => ({ ...prev, [field]: value }));
     }, []);
 
@@ -54,13 +51,13 @@ export const FurnitureBaseForm = ({ initialData, onSubmit, onCancel, submitText,
             <TextField onChange={e => updateField('description', e.target.value)} value={formData.description || ''}
                 fullWidth label={t('inventory.description') || t('profile.bio')} multiline rows={4} disabled={isSubmitting} />
 
-
             <Box className="actions-group">
                 {onCancel && (
                     <Button onClick={onCancel} variant="outlined" disabled={isSubmitting} className="btn-base" >
                         {t('common.cancel')}
                     </Button>
                 )}
+
                 <Button type="submit" variant="contained" disabled={isSubmitting} className="btn-base">
                     {isSubmitting ? t('common.loading') : submitText}
                 </Button>
@@ -68,3 +65,5 @@ export const FurnitureBaseForm = ({ initialData, onSubmit, onCancel, submitText,
         </Box>
     );
 };
+
+export default FurnitureBaseForm;
