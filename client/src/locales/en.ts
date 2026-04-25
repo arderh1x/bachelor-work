@@ -54,9 +54,9 @@ export default {
     },
 
     home: {
-        title: "Our Masters",
+        title: "Our Producers",
         subtitle: "Choose a professional for your custom project",
-        no_producers: "No registered masters found at the moment.",
+        no_producers: "No registered producers found at the moment.",
         no_bio: "No description provided.",
         view_workshop: "Visit Workshop",
     },
@@ -76,7 +76,6 @@ export default {
         payment_methods: "Payment Methods",
         payment_placeholder: "E.g.: Card, Cash on delivery",
         no_methods: "No payment methods specified",
-        verified_producer: "Verified Master",
         producer_mode: "Producer Mode",
         edit_button: "Edit Profile",
         save_success: "Profile updated successfully",
@@ -143,7 +142,7 @@ export default {
     producer: {
         catalog_title: "Workshop Catalog",
         catalog_subtitle: "Choose ready-made items or make an individual request",
-        order_custom: "Order something unique",
+        order_custom: "Order custom furniture",
     },
 
     faq: {
@@ -152,7 +151,7 @@ export default {
             how_it_works: {
                 question: "How to order?",
                 answer: [
-                    "Select a master on the main page.",
+                    "Select a producer on the main page.",
                     "Go to their catalog and choose an item.",
                     "Fill in your contact info and wait for confirmation."
                 ]
@@ -161,13 +160,13 @@ export default {
                 question: "Payment methods?",
                 answer: [
                     "Usually a deposit and final payment.",
-                    "Check the master's profile for details."
+                    "Check the producer's profile for details."
                 ]
             },
             delivery: {
                 question: "How about delivery?",
                 answer: [
-                    "Discussed individually with the master.",
+                    "Discussed individually with the producer.",
                     "Pickup or shipping is available."
                 ]
             }
@@ -175,14 +174,14 @@ export default {
     },
 
     errors: {
-        fetch_producers: "Failed to load masters list",
+        fetch_producers: "Failed to load producers list",
         fetch_profile: "Failed to load profile data",
         fetch_failed: "Error loading data",
         update_failed: "Failed to update information",
         order_failed: "Failed to create order",
         profile_not_found: "Profile not found",
         page_not_found: "Page Not Found",
-        page_not_found_desc: "It seems this furniture hasn't been assembled yet.",
+        page_not_found_desc: "It seems this link is no more valid.",
         delete_failed: "Failed to delete",
         register_failed: "Registration failed",
     },
