@@ -49,7 +49,7 @@ function OrderModal({ open, onClose, producerId, furnitureItem, onSuccess, onErr
             onSuccess(t('orders.success_message'));
             handleClose();
         } catch (error) {
-            console.error('[OrderModal] Failed to submit:', error);
+            console.error('[OrderModal] Failed to submit order:', error);
             onError(t('errors.order_failed'));
         } finally {
             setIsSubmitting(false);

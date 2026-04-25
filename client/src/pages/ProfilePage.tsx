@@ -30,8 +30,8 @@ function ProfilePage() {
                 avatar_url: data.avatar_url ?? '',
                 payment_methods: ('payment_methods' in data ? data.payment_methods : '') ?? ''
             });
-        } catch (err) {
-            console.error("[ProfilePage] Loading profile data error:", err);
+        } catch (error) {
+            console.error("[ProfilePage] Failed to load profile:", error);
             showToast(t('errors.fetch_profile'), 'error');
         } finally {
             setLoading(false);
@@ -54,7 +54,8 @@ function ProfilePage() {
             await fetchProfile();
             setIsEditing(false);
             showToast(t('profile.save_success'), 'success');
-        } catch {
+        } catch (error) {
+            console.error("[ProfilePage] Failed to save profile:", error);
             showToast(t('errors.update_failed'), 'error');
         }
     };

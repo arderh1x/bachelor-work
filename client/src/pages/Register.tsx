@@ -27,9 +27,10 @@ function Register() {
             await authApi.register(formData);
             showToast(t('auth.register_success'), 'success');
             setTimeout(() => navigate('/login'), 1500);
-        } catch (err) {
+        } catch (error) {
+            console.error("[Register] Failed to register:", error);
             let message = t('errors.register_failed');
-            if (isAxiosError(err)) message = err.response?.data?.error || err.message;
+            if (isAxiosError(error)) message = error.response?.data?.error || error.message;
             showToast(message, 'error');
         } finally {
             setIsSubmitting(false);

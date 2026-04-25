@@ -38,8 +38,8 @@ function ProducerDetailsPage() {
                     setProducer(profileData);
                     setItems(furnitureData);
                 }
-            } catch (err) {
-                console.error("[ProducerDetailsPage] Failed on loading producer details:", err);
+            } catch (error) {
+                console.error("[ProducerDetailsPage] Failed to load producer details:", error);
                 if (isMounted) showToast(t('errors.fetch_producers'), 'error');
             } finally {
                 if (isMounted) setLoading(false);

@@ -24,18 +24,19 @@ function InventoryPage() {
         try {
             const data = await furnitureApi.getMyFurniture();
             setItems(data);
-        } catch { showToast(t('errors.fetch_failed'), 'error') }
+        } catch (error) {
+            console.error('[InventoryPage] Failed to fetch furniture:', error);
+            showToast(t('errors.fetch_failed'), 'error');
+        }
         finally { setLoading(false) }
     }, [t, showToast]);
 
     useEffect(() => {
         let isMounted = true;
-
         const loadData = async () => {
             if (isMounted) await fetchItems();
         };
         loadData();
-
         return () => {
             isMounted = false;
         };
@@ -64,7 +65,7 @@ function InventoryPage() {
             setModalOpen(false);
             fetchItems();
         } catch (error) {
-            console.error("[InventoryPage] Failed to submit form:", error);
+            console.error("[InventoryPage] Failed to submit furniture add form:", error);
             showToast(t('errors.update_failed'), 'error');
         } finally {
             setSubmitting(false);
@@ -77,7 +78,8 @@ function InventoryPage() {
             await furnitureApi.delete(id);
             showToast(t('common.delete_success'), 'success');
             fetchItems();
-        } catch {
+        } catch (error) {
+            console.error("[InventoryPage] Failed to delete furniture:", error);
             showToast(t('errors.delete_failed'), 'error');
         }
     };

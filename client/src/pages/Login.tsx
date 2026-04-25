@@ -25,9 +25,10 @@ function Login() {
             const response = await authApi.login(formData);
             login(response.data.user);
             navigate('/');
-        } catch (err) {
+        } catch (error) {
+            console.error("[Login] Failed to login:", error);
             let message = t('errors.update_failed');
-            if (isAxiosError(err)) message = err.response?.data?.error || err.message;
+            if (isAxiosError(error)) message = error.response?.data?.error || error.message;
             showToast(message, 'error');
         } finally { setIsSubmitting(false) }
     };
