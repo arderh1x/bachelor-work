@@ -79,7 +79,7 @@ export default {
         producer_mode: "Режим виробника",
         edit_button: "Редагувати профіль",
         save_success: "Профіль успішно оновлено",
-        verified_producer: "Перевірений виробник",
+        payment: "Допустимі методи оплати",
     },
 
     inventory: {

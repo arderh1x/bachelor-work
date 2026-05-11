@@ -22,6 +22,8 @@ function ProfileCard({ profile, username, isEditable = false, onEdit, variant = 
         ? (profile as Producer).workshop_name
         : (username || t('profile.customer_title'));
 
+    const paymentMethods = (profile as Producer).payment_methods;
+
     const containerClass = isHeader
         ? `fade-in ${className}`
         : `app-card profile-card-container fade-in ${className}`;
@@ -40,7 +42,7 @@ function ProfileCard({ profile, username, isEditable = false, onEdit, variant = 
 
                     {isProducer && (
                         <Typography variant="body2" color="textSecondary" sx={{ opacity: 0.8 }}>
-                            {isHeader ? t('profile.verified_producer') : t('profile.producer_mode')}
+                            {isHeader ? `${t('profile.payment')}: ${paymentMethods}` : t('profile.producer_mode')}
                         </Typography>
                     )}
                 </Box>

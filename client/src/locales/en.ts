@@ -79,7 +79,7 @@ export default {
         producer_mode: "Producer Mode",
         edit_button: "Edit Profile",
         save_success: "Profile updated successfully",
-        verified_producer: "Verified producer",
+        payment: "Accepted payment methods",
     },
 
     inventory: {
